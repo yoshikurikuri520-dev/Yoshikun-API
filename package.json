@@ -1,11 +1,10 @@
 {
-  "name": "yoshikungpt-web-api",
+  "name": "yoshikun-api",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.mjs",
-    "dev": "node --watch server.mjs"
+    "start": "node server.mjs"
   },
   "dependencies": {
     "cors": "^2.8.5",
