@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#070b1c">
+<title>YoshikunGPT Complete Web Edition</title>
+<style>
+:root{
+  --bg:#050816;--panel:#0d1429;--panel2:#131d38;--line:#25355f;--text:#f7fbff;
+  --muted:#93a4c7;--cyan:#24e8ff;--purple:#a855f7;--pink:#ff4ecd;--green:#52f2a8;
+  --danger:#ff637d;--shadow:0 18px 60px rgba(0,0,0,.35);--radius:18px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;overscroll-behavior:none}
+body{margin:0;font-family:Inter,"Segoe UI","Noto Sans JP",sans-serif;color:var(--text);background:
+radial-gradient(circle at 15% 5%,rgba(36,232,255,.14),transparent 26%),
+radial-gradient(circle at 90% 10%,rgba(168,85,247,.16),transparent 30%),var(--bg);overflow:hidden}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+header{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(5,8,22,.78);backdrop-filter:blur(18px);z-index:20}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,var(--cyan),var(--purple));box-shadow:0 0 28px rgba(36,232,255,.28)}
+.brand{min-width:0}.brand h1{margin:0;font-size:clamp(16px,2.5vw,23px);letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{color:var(--muted)}
+.status{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--green);font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}
+.icon-btn{border:1px solid var(--line);background:var(--panel2);color:#fff;border-radius:12px;padding:9px 11px}
+.layout{min-height:0;display:grid;grid-template-columns:290px 1fr}
+.sidebar{min-height:0;overflow:auto;padding:15px;border-right:1px solid rgba(255,255,255,.08);background:rgba(9,14,31,.8)}
+.side-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.16em;margin:14px 4px 8px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(20,31,60,.95),rgba(12,19,39,.95));border-radius:15px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card label{display:block;font-size:13px;color:var(--muted);margin-bottom:8px}.card select,.card input[type="text"]{width:100%;border:1px solid var(--line);background:#091126;color:#fff;border-radius:10px;padding:10px}
+.feature{display:flex;align-items:center;gap:10px}.feature .ico{font-size:20px}.feature strong{display:block;font-size:14px}.feature small{color:var(--muted)}
+.switch{margin-left:auto;position:relative;width:42px;height:24px}.switch input{display:none}.switch span{position:absolute;inset:0;border-radius:99px;background:#243252;transition:.2s}.switch span:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s}.switch input:checked+span{background:linear-gradient(90deg,var(--cyan),var(--purple))}.switch input:checked+span:before{transform:translateX(18px)}
+.side-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.side-actions button{border:1px solid var(--line);background:#111c38;color:#fff;padding:10px;border-radius:11px}.danger{color:#ffd7de!important;border-color:#6e3043!important}
+.main{min-width:0;min-height:0;display:grid;grid-template-rows:1fr auto;position:relative}
+.chat{min-height:0;overflow:auto;padding:24px clamp(14px,4vw,44px);scroll-behavior:smooth}
+.hero{text-align:center;max-width:680px;margin:4vh auto 30px;padding:28px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:linear-gradient(145deg,rgba(18,28,57,.72),rgba(9,14,31,.72));box-shadow:var(--shadow)}
+.hero .orb{width:84px;height:84px;margin:auto;border-radius:28px;display:grid;place-items:center;font-size:42px;background:linear-gradient(135deg,var(--cyan),var(--purple),var(--pink));animation:float 3s ease-in-out infinite;box-shadow:0 0 45px rgba(168,85,247,.35)}
+.hero h2{margin:18px 0 8px}.hero p{color:var(--muted);line-height:1.7}.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}.chip{border:1px solid var(--line);background:#101a35;color:#dfe9ff;border-radius:99px;padding:8px 12px;font-size:13px}
+.message{display:flex;gap:11px;max-width:850px;margin:16px auto;animation:pop .22s ease}.message.user{flex-direction:row-reverse}.avatar{flex:0 0 38px;width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--purple))}.user .avatar{background:linear-gradient(135deg,#ff7aa8,#ffb347)}
+.bubble{max-width:min(75%,700px);padding:13px 15px;border-radius:18px;border:1px solid var(--line);background:rgba(17,28,56,.92);line-height:1.65;white-space:pre-wrap;word-break:break-word;box-shadow:0 10px 30px rgba(0,0,0,.18)}.user .bubble{background:linear-gradient(135deg,rgba(111,45,189,.95),rgba(50,71,170,.95));border-color:#7457bb}.meta{font-size:11px;color:var(--muted);margin-top:7px}.attachment{margin-top:9px;padding:8px 10px;border-radius:10px;background:rgba(0,0,0,.2);font-size:12px;color:#dbe8ff}.attachment img{display:block;max-width:260px;max-height:220px;border-radius:10px;margin-top:8px}
+.typing{display:inline-flex;gap:5px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:blink 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.composer-wrap{padding:10px clamp(10px,3vw,28px) calc(10px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(5,8,22,.95) 24%)}
+.preview{display:none;max-width:950px;margin:0 auto 8px;border:1px solid var(--line);background:#101a35;border-radius:12px;padding:8px 11px;font-size:13px}.preview.show{display:flex;align-items:center;gap:8px}.preview button{margin-left:auto;border:0;background:transparent;color:#fff}
+.composer{max-width:950px;margin:auto;display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:end;padding:9px;border:1px solid #344878;background:rgba(13,20,41,.96);border-radius:18px;box-shadow:0 -8px 40px rgba(0,0,0,.24)}
+.composer textarea{resize:none;max-height:150px;min-height:44px;border:0;outline:0;background:transparent;color:#fff;padding:11px 8px;line-height:1.5}.composer textarea::placeholder{color:#7787aa}.composer button{height:44px;min-width:44px;border:0;border-radius:13px;color:#fff;background:#172548}.composer .send{padding:0 18px;background:linear-gradient(135deg,var(--purple),#5169ff);font-weight:700}.composer .mic.active{background:var(--danger);animation:pulse 1s infinite}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:#111b35;border:1px solid var(--line);padding:11px 16px;border-radius:12px;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;display:none;place-items:center;padding:18px;background:rgba(0,0,0,.64);z-index:80}.modal.show{display:grid}.modal-box{width:min(560px,100%);max-height:85vh;overflow:auto;background:#0d152c;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}.modal-box h3{margin-top:0}.modal-box textarea{width:100%;min-height:130px;background:#091126;color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.modal-actions button{border:1px solid var(--line);background:#182548;color:#fff;border-radius:10px;padding:9px 13px}
+@keyframes float{50%{transform:translateY(-8px) rotate(2deg)}}@keyframes pop{from{opacity:0;transform:translateY(8px)}}@keyframes blink{50%{opacity:.25;transform:translateY(-3px)}}@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(255,99,125,.15)}}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{position:fixed;left:0;top:73px;bottom:0;width:min(310px,88vw);z-index:60;transform:translateX(-105%);transition:.25s}.sidebar.open{transform:translateX(0)}.bubble{max-width:86%}.status span{display:none}.hero{margin-top:1vh;padding:22px 16px}.composer{grid-template-columns:auto 1fr auto}.composer .send{grid-column:1/-1}.desktop-only{display:none}}
+
+/* Cute Baikinman-inspired background */
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:-2;
+  background:
+    radial-gradient(circle at 18% 22%,rgba(255,126,210,.18),transparent 22%),
+    radial-gradient(circle at 82% 18%,rgba(139,92,246,.22),transparent 24%),
+    linear-gradient(160deg,#180b2d 0%,#32144b 45%,#10162e 100%);
+}
+body::after{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.30;
+  background-image:
+    radial-gradient(circle at 50% 42%,#f6e7ff 0 3%,transparent 3.3%),
+    radial-gradient(ellipse at 50% 54%,#6f2ba8 0 14%,transparent 14.5%),
+    radial-gradient(circle at 44% 50%,#fff 0 3%,transparent 3.3%),
+    radial-gradient(circle at 56% 50%,#fff 0 3%,transparent 3.3%),
+    radial-gradient(circle at 44% 50%,#231032 0 1.2%,transparent 1.4%),
+    radial-gradient(circle at 56% 50%,#231032 0 1.2%,transparent 1.4%),
+    radial-gradient(ellipse at 50% 60%,#ff91c8 0 4%,transparent 4.4%),
+    radial-gradient(circle at 26% 34%,rgba(255,255,255,.18) 0 1.5%,transparent 1.8%),
+    radial-gradient(circle at 74% 28%,rgba(255,255,255,.14) 0 1.8%,transparent 2%);
+  background-size:420px 420px,420px 420px,420px 420px,420px 420px,420px 420px,420px 420px,420px 420px,220px 220px,260px 260px;
+  background-position:center 8%,center 8%,center 8%,center 8%,center 8%,center 8%,center 8%,0 0,40px 70px;
+  background-repeat:no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,no-repeat,repeat,repeat;
+  filter:drop-shadow(0 18px 40px rgba(0,0,0,.25));
+}
+.bgm-card .bgm-row{display:flex;align-items:center;gap:8px}
+.bgm-card button{border:1px solid var(--line);background:#171f41;color:#fff;border-radius:10px;padding:8px 10px}
+.bgm-card input[type="range"]{width:100%}
+.bgm-now{font-size:12px;color:var(--muted);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.copy-reply{display:block;margin:8px 0 0 auto;border:0;background:rgba(255,255,255,.08);color:var(--muted);border-radius:8px;padding:5px 8px;font-size:11px}
+.copy-reply:hover{color:#fff;background:rgba(255,255,255,.14)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.stat-box{padding:14px;border:1px solid var(--line);border-radius:13px;background:#101a35;text-align:center}
+.stat-box strong{display:block;font-size:25px;color:var(--cyan)}.stat-box span{font-size:12px;color:var(--muted)}
+
+
+.web-sources{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.12)}
+.web-sources strong{display:block;font-size:12px;color:var(--cyan);margin-bottom:6px}
+.web-sources a{display:block;color:#bfefff;font-size:12px;line-height:1.5;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.web-sources a:hover{text-decoration:underline}
+.search-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);margin-bottom:6px}
+.modal-box input,.modal-box select{width:100%;background:#091126;color:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;margin:6px 0 12px}
+.help{font-size:12px;color:var(--muted);line-height:1.6}
+
+
+/* ===== Smartphone compact layout ===== */
+@media (max-width: 820px) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  .app {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: 0;
+  }
+
+  header {
+    min-height: 56px;
+    gap: 8px;
+    padding: 7px 9px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    font-size: 19px;
+  }
+
+  .brand h1 {
+    max-width: 47vw;
+    font-size: 15px;
+    letter-spacing: 0;
+  }
+
+  .brand small {
+    display: block;
+    max-width: 48vw;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .icon-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+
+  .status {
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .layout,
+  .main {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .sidebar {
+    top: calc(56px + env(safe-area-inset-top));
+    bottom: 0;
+    width: min(284px, 86vw);
+    padding: 10px;
+    overscroll-behavior: contain;
+  }
+
+  .side-title {
+    margin: 10px 3px 6px;
+    font-size: 10px;
+  }
+
+  .card {
+    padding: 9px;
+    margin-bottom: 7px;
+    border-radius: 12px;
+  }
+
+  .card label,
+  .feature strong {
+    font-size: 12px;
+  }
+
+  .feature small,
+  .bgm-now {
+    font-size: 10px;
+  }
+
+  .card select,
+  .card input[type="text"],
+  .card input[type="url"] {
+    min-height: 38px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .side-actions {
+    gap: 6px;
+  }
+
+  .side-actions button,
+  .bgm-card button {
+    min-height: 36px;
+    padding: 7px 5px;
+    font-size: 11px;
+  }
+
+  .main {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .chat {
+    padding: 10px 8px 8px;
+    scroll-padding-bottom: 82px;
+  }
+
+  .hero {
+    width: 100%;
+    margin: 6px auto 12px;
+    padding: 14px 10px;
+    border-radius: 17px;
+  }
+
+  .hero .orb {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    font-size: 28px;
+  }
+
+  .hero h2 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+  }
+
+  .hero p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .chips {
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .chip {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .message {
+    gap: 7px;
+    margin: 9px auto;
+  }
+
+  .avatar {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+
+  .bubble,
+  .user .bubble {
+    max-width: calc(100% - 42px);
+    padding: 9px 11px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .meta {
+    margin-top: 5px;
+    font-size: 9px;
+  }
+
+  .attachment img {
+    max-width: 100%;
+    max-height: 180px;
+  }
+
+  .composer-wrap {
+    padding: 5px 6px calc(5px + env(safe-area-inset-bottom));
+    background: rgba(5, 8, 22, .97);
+  }
+
+  .preview {
+    margin-bottom: 5px;
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .composer {
+    width: 100%;
+    grid-template-columns: 38px minmax(0, 1fr) 38px 52px;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .composer textarea {
+    min-height: 38px;
+    max-height: 96px;
+    padding: 8px 5px;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  .composer button {
+    min-width: 38px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 10px;
+    font-size: 15px;
+  }
+
+  .composer .send {
+    grid-column: auto;
+    width: 52px;
+    min-width: 52px;
+    padding: 0 5px;
+    font-size: 12px;
+  }
+
+  .toast {
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    max-width: calc(100vw - 24px);
+    padding: 9px 12px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-box {
+    max-height: 88dvh;
+    padding: 14px;
+    border-radius: 15px;
+  }
+
+  .modal-box h3 {
+    font-size: 17px;
+  }
+
+  .stats-grid {
+    gap: 7px;
+    margin: 10px 0;
+  }
+
+  .stat-box {
+    padding: 10px 6px;
+  }
+
+  .stat-box strong {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 390px) {
+  .brand h1 {
+    max-width: 43vw;
+    font-size: 14px;
+  }
+
+  .brand small {
+    max-width: 43vw;
+  }
+
+  .hero p {
+    font-size: 11px;
+  }
+
+  .chip:nth-child(n+7) {
+    display: none;
+  }
+
+  .composer {
+    grid-template-columns: 36px minmax(0, 1fr) 36px 48px;
+  }
+
+  .composer button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+  }
+
+  .composer .send {
+    width: 48px;
+    min-width: 48px;
+  }
+}
+
+@media (max-height: 680px) and (max-width: 820px) {
+  .hero {
+    padding: 10px 8px;
+  }
+
+  .hero .orb {
+    width: 44px;
+    height: 44px;
+    font-size: 23px;
+  }
+
+  .hero h2 {
+    margin: 7px 0 3px;
+    font-size: 16px;
+  }
+
+  .hero p {
+    display: none;
+  }
+
+  .chips {
+    margin-top: 7px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <button class="icon-btn" id="menuBtn" aria-label="メニュー">☰</button>
+  <div class="logo">⚡</div>
+  <div class="brand"><h1>YoshikunGPT Complete Web Edition</h1><small>Web検索優先 • オフライン応答にも対応</small></div>
+  <div class="status"><i class="dot"></i><span id="statusText">Web検索モード</span></div>
+</header>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="side-title">AI CORE</div>
+  <div class="card"><label for="persona">🤖 AI人格切替</label><select id="persona"><option value="nexus">NEXUS OMEGA</option><option value="brat" selected>生意気ヨシ君AI</option><option value="shadow">SHADOW AI</option><option value="sakura">SAKURA AI</option><option value="teacher">TEACHER AI</option><option value="maid">MAID AI</option><option value="gamer">GAMER AI</option><option value="comedian">お笑いAI</option><option value="writer">文章家AI</option><option value="coach">コーチAI</option><option value="concierge">コンシェルジュAI</option><option value="gentle">やさしいAI</option></select></div>
+  <div class="card"><label for="roastLevel">😈 煽りレベル</label><select id="roastLevel"><option value="mild">小生意気</option><option value="spicy" selected>クソ生意気</option><option value="chaos">限界煽り</option></select></div>
+  <div class="card feature"><span class="ico">🧠</span><div><strong>永続メモリ</strong><small>会話履歴を端末保存</small></div><label class="switch"><input id="memoryToggle" type="checkbox" checked><span></span></label></div>
+  <div class="card feature"><span class="ico">🔊</span><div><strong>読み上げ</strong><small>AI回答を音声再生</small></div><label class="switch"><input id="speakToggle" type="checkbox"><span></span></label></div>
+  <div class="card feature"><span class="ico">🌐</span><div><strong>Web Search</strong><small id="webStatusSmall">API Web検索</small></div><label class="switch"><input id="webToggle" type="checkbox" checked><span></span></label></div>
+  <div class="card feature"><span class="ico">🎭</span><div><strong>Live Avatar</strong><small>反応アニメーション</small></div><label class="switch"><input id="avatarToggle" type="checkbox" checked><span></span></label></div>
+
+  <div class="card bgm-card">
+    <label>🎵 BGM 🎵</label>
+    <div class="bgm-row">
+      <button id="bgmToggle" type="button">▶ 再生</button>
+      <span style="font-size:12px;color:var(--muted)">音量</span>
+      <input id="bgmVolume" type="range" min="0" max="0.25" step="0.01" value="0.08" aria-label="BGM音量">
+    </div>
+    <div class="bgm-now" id="bgmNow">最初の操作後に再生されます</div>
+    <input id="githubBgmUrl" type="url" inputmode="url" autocapitalize="none" autocomplete="off"
+      placeholder="GitHubのaudioフォルダーURL（任意）"
+      style="width:100%;margin-top:9px;border:1px solid var(--line);background:#0f1530;color:#fff;border-radius:10px;padding:9px;font-size:12px">
+    <div class="bgm-row" style="margin-top:7px">
+      <button id="saveGithubBgm" type="button">GitHub設定</button>
+      <button id="clearGithubBgm" type="button">ローカルへ戻す</button>
+    </div>
+    <div class="bgm-now" id="bgmSource">音源：アプリ内</div>
+  </div>
+
+  <div class="side-title">TOOLS</div>
+  <div class="card"><div class="side-actions"><button id="memoryBtn">記憶を編集</button><button id="webSettingsBtn">検索設定</button><button id="exportBtn">履歴出力</button><button id="themeBtn">配色変更</button><button id="statsBtn">会話統計</button><button id="surpriseBtn">おまかせ話題</button><button id="clearBtn" class="danger">全消去</button></div></div>
+  <div class="card"><label>🧰 便利ツール</label><div class="side-actions">
+<button data-fun="/rewrite">文章を整える</button><button data-fun="/ideas">アイデア5個</button>
+<button data-fun="/todo">ToDo整理</button><button data-fun="/timer 5">5分タイマー</button>
+<button data-fun="/phrase">言い換え辞典</button><button data-fun="/word">今日の語彙</button>
+<button data-fun="/email">メール雛形</button><button data-fun="/meeting">会議メモ</button>
+<button data-fun="/prompt">質問を具体化</button><button data-fun="/breath">1分休憩</button>
+</div></div>
+<div class="card"><label>🎲 おふざけ機能</label><div class="side-actions"><button data-fun="/dice">サイコロ</button><button data-fun="/coin">コイントス</button><button data-fun="/fortune">毒舌おみくじ</button><button data-fun="/boss">無茶ぶり</button><button data-fun="/rap">即興ラップ</button><button data-fun="/quiz">ひっかけ問題</button><button data-fun="/janken">じゃんけん</button><button data-fun="/joke">ジョーク</button><button data-fun="/story">3行物語</button><button data-fun="/compliment">全力で褒める</button><button data-fun="/number 100">数字抽選</button><button data-fun="/stats">会話統計</button></div></div>
+  <div class="card feature"><span class="ico">📎</span><div><strong>ファイル解析</strong><small>画像・テキストを確認</small></div></div>
+  <div class="card feature"><span class="ico">📱</span><div><strong>iPhone App Ready</strong><small>SwiftUI＋WKWebView版</small></div></div>
+</aside>
+<main class="main">
+  <section class="chat" id="chat" aria-live="polite">
+    <div class="hero" id="hero"><div class="orb" id="orb">🤖</div><h2>COMPLETE WEB MODE 起動完了</h2><p>サーバーAPIのWeb検索を利用し、複数の情報源を参照してAI回答を生成します。APIに接続できない時はオフライン応答へ切り替えます。</p><div class="chips"><button class="chip">できることを教えて</button><button class="chip">今日の挨拶</button><button class="chip">25×48を計算</button><button class="chip">/fortune</button><button class="chip">/boss</button><button class="chip">/janken</button><button class="chip">/joke</button><button class="chip">/story</button></div></div>
+  </section>
+  <div class="composer-wrap"><div class="preview" id="preview"><span id="previewText"></span><button id="removeFile">✕</button></div><div class="composer"><button id="attachBtn" title="ファイル添付">📎</button><textarea id="messageInput" rows="1" placeholder="メッセージを入力…（Enterで送信 / Shift+Enterで改行）"></textarea><button id="micBtn" class="mic" title="音声入力">🎤</button><button id="sendBtn" class="send">送信</button><input id="fileInput" type="file" accept="image/*,.txt,.md,.json,.csv,.html,.css,.js" hidden></div></div>
+</main>
+</div>
+</div>
+<audio id="bgmAudio" preload="metadata"></audio>
+<div class="toast" id="toast"></div>
+<div class="modal" id="statsModal"><div class="modal-box"><h3>📊 会話統計</h3><div class="stats-grid"><div class="stat-box"><strong id="statMessages">0</strong><span>総メッセージ</span></div><div class="stat-box"><strong id="statWords">0</strong><span>入力文字数</span></div><div class="stat-box"><strong id="statCommands">0</strong><span>おふざけ実行</span></div><div class="stat-box"><strong id="statDays">1</strong><span>会話日数</span></div></div><div class="modal-actions"><button data-stats-close>閉じる</button></div></div></div>
+<div class="modal" id="memoryModal"><div class="modal-box"><h3>🧠 永続メモリ</h3><p style="color:var(--muted)">AIに覚えさせたい内容を入力してください。</p><textarea id="memoryText" placeholder="例：私の名前はよしくん。ゲームが好き。"></textarea><div class="modal-actions"><button data-close>閉じる</button><button id="saveMemory">保存</button></div></div></div>
+
+<div class="modal" id="webSettingsModal"><div class="modal-box">
+<h3>🌐 Web検索設定</h3>
+<label for="searchLanguage">検索言語</label>
+<select id="searchLanguage"><option value="ja" selected>日本語</option><option value="en">English</option></select>
+<label for="customSearchEndpoint">Web検索API</label>
+<input id="customSearchEndpoint"
+       type="url"
+       value="/api/search"
+       placeholder="https://example.com/api/search">
+<p class="help">同じドメインの <code>/api/search</code> を使用します。APIはPOSTで <code>{query, history, language}</code> を受け取り、<code>{answer, sources:[{title,url}]}</code> を返してください。APIキーはHTMLへ書かず、サーバー側の環境変数で管理してください。</p>
+<div class="modal-actions"><button data-web-close>閉じる</button><button id="saveWebSettings">保存</button></div>
+</div></div>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s);
+const chat=$('#chat'),input=$('#messageInput'),sendBtn=$('#sendBtn'),fileInput=$('#fileInput');
+const state={history:[],file:null,theme:0,recognition:null};
+
+const bgmTracks=[
+  {title:'Endless Story',file:'endless_story.m4a',local:'audio/endless_story.m4a'},
+  {title:'糸',file:'ito.m4a',local:'audio/ito.m4a'},
+  {title:'長い間',file:'nagaiaida.m4a',local:'audio/nagaiaida.m4a'},
+  {title:'CAN YOU CELEBRATE',file:'can　you  celebrate.m4a',local:'audio/can　you  celebrate.m4a'},
+  {title:'タッチ',file:'tacchi.m4a',local:'audio/tacchi.m4a'},
+  {title:'もっと強く抱きしめたら',file:'mottotuyokudakishimetara.mp3',local:'audio/mottotuyokudakishimetara.mp3'},
+  {title:'God knows... ',file:'god knows... .mp3',local:'audio/god knows... .mp3'},
+  {title:'茜さす',file:'akanesasu.mp3',local:'audio/akanesasu.mp3'},
+  {title:'懐メロメドレー',file:'natsumero_medley.mp3',local:'audio/natsumero_medley.mp3'}
+];
+let bgmOrder=[],bgmIndex=-1,bgmStarted=false,bgmRetrying=false;
+const bgmAudio=$('#bgmAudio'),bgmToggle=$('#bgmToggle'),bgmVolume=$('#bgmVolume'),bgmNow=$('#bgmNow');
+const githubBgmUrl=$('#githubBgmUrl'),saveGithubBgm=$('#saveGithubBgm'),clearGithubBgm=$('#clearGithubBgm'),bgmSource=$('#bgmSource');
+
+function normalizeGithubFolder(value){
+  let url=(value||'').trim().replace(/\/+$/,'');
+  if(!url)return '';
+  try{
+    const u=new URL(url);
+    if(u.hostname==='github.com'){
+      const parts=u.pathname.split('/').filter(Boolean);
+      const tree=parts.indexOf('tree'),blob=parts.indexOf('blob');
+      const marker=tree>=0?tree:blob;
+      if(parts.length>=4 && marker===2){
+        const owner=parts[0],repo=parts[1],branch=parts[3],folder=parts.slice(4).join('/');
+        return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}${folder?'/'+folder:''}`;
+      }
+      throw new Error('GitHubのaudioフォルダーを開き、そのURLを貼ってください');
+    }
+    if(u.hostname==='raw.githubusercontent.com')return url;
+    if(u.protocol!=='https:')throw new Error('HTTPSのURLを使用してください');
+    return url;
+  }catch(e){throw new Error(e.message||'URLの形式を確認してください')}
+}
+function encodeRemotePath(base,file){
+  return base+'/'+file.split('/').map(encodeURIComponent).join('/');
+}
+function currentGithubBase(){
+  try{return normalizeGithubFolder(localStorage.getItem('ygpt_github_bgm')||'')}catch(_){return ''}
+}
+function trackSource(track,useLocal=false){
+  const base=currentGithubBase();
+  return (!useLocal && base)?encodeRemotePath(base,track.file):track.local;
+}
+function refreshBgmSource(){
+  const base=currentGithubBase();
+  githubBgmUrl.value=base;
+  bgmSource.textContent=base?'音源：GitHub（通信再生）':'音源：アプリ内';
+}
+function shuffleTracks(){
+  bgmOrder=bgmTracks.map((_,i)=>i);
+  for(let i=bgmOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bgmOrder[i],bgmOrder[j]]=[bgmOrder[j],bgmOrder[i]]}
+  if(bgmIndex>=0 && bgmOrder[0]===bgmIndex && bgmOrder.length>1)[bgmOrder[0],bgmOrder[1]]=[bgmOrder[1],bgmOrder[0]];
+}
+function loadAndPlayTrack(track,useLocal=false){
+  bgmRetrying=useLocal;
+  bgmAudio.src=trackSource(track,useLocal);
+  bgmAudio.volume=Number(bgmVolume.value);
+  bgmNow.textContent=(useLocal?'予備音源を再生中：':'再生中：')+track.title;
+  return bgmAudio.play().then(()=>{
+    bgmStarted=true;bgmToggle.textContent='⏸ 停止';
+    if(!useLocal && currentGithubBase())bgmSource.textContent='音源：GitHub（通信再生）';
+  });
+}
+function playNextBgm(){
+  if(!bgmOrder.length)shuffleTracks();
+  bgmIndex=bgmOrder.shift();
+  const track=bgmTracks[bgmIndex];
+  loadAndPlayTrack(track,false).catch(()=>{
+    if(currentGithubBase()){
+      bgmNow.textContent='GitHub音源に接続できないため、アプリ内音源へ切り替えます';
+      loadAndPlayTrack(track,true).catch(()=>{bgmNow.textContent='▶ 再生を押すとBGMが始まります'});
+    }else bgmNow.textContent='▶ 再生を押すとBGMが始まります';
+  });
+}
+function startBgmOnce(){
+  if(bgmStarted)return;
+  playNextBgm();
+  document.removeEventListener('pointerdown',startBgmOnce);
+  document.removeEventListener('keydown',startBgmOnce);
+}
+bgmAudio.addEventListener('ended',playNextBgm);
+bgmAudio.addEventListener('error',()=>{
+  const track=bgmTracks[bgmIndex];
+  if(track && currentGithubBase() && !bgmRetrying){
+    bgmRetrying=true;
+    bgmNow.textContent='GitHub音源を取得できないため、アプリ内音源を試しています';
+    loadAndPlayTrack(track,true).catch(()=>{bgmNow.textContent='BGMファイルを読み込めませんでした'});
+  }else bgmNow.textContent='BGMファイルを読み込めませんでした';
+});
+bgmToggle.onclick=()=>{
+  if(bgmAudio.paused){
+    if(!bgmAudio.src)playNextBgm();
+    else bgmAudio.play().then(()=>{bgmStarted=true;bgmToggle.textContent='⏸ 停止'}).catch(()=>toast('再生を開始できませんでした'));
+  }else{bgmAudio.pause();bgmToggle.textContent='▶ 再生';bgmNow.textContent='BGM一時停止中';}
+};
+bgmVolume.oninput=()=>{bgmAudio.volume=Number(bgmVolume.value);localStorage.setItem('ygpt_bgm_volume',bgmVolume.value)};
+saveGithubBgm.onclick=()=>{
+  try{
+    const normalized=normalizeGithubFolder(githubBgmUrl.value);
+    if(!normalized)throw new Error('GitHubのaudioフォルダーURLを入力してください');
+    localStorage.setItem('ygpt_github_bgm',normalized);
+    githubBgmUrl.value=normalized;bgmSource.textContent='音源：GitHub（通信再生）';
+    bgmAudio.pause();bgmAudio.removeAttribute('src');bgmAudio.load();bgmStarted=false;bgmRetrying=false;
+    toast('GitHub BGMを設定しました。再生ボタンを押してください');
+  }catch(e){toast(e.message)}
+};
+clearGithubBgm.onclick=()=>{
+  localStorage.removeItem('ygpt_github_bgm');githubBgmUrl.value='';
+  bgmAudio.pause();bgmAudio.removeAttribute('src');bgmAudio.load();bgmStarted=false;bgmRetrying=false;
+  refreshBgmSource();bgmNow.textContent='アプリ内音源に戻しました';toast('ローカルBGMに戻しました');
+};
+const savedBgmVolume=localStorage.getItem('ygpt_bgm_volume');if(savedBgmVolume!==null)bgmVolume.value=savedBgmVolume;
+refreshBgmSource();
+document.addEventListener('pointerdown',startBgmOnce,{once:true});
+document.addEventListener('keydown',startBgmOnce,{once:true});
+
+const personas={
+ nexus:{name:'NEXUS OMEGA',icon:'🤖',prefix:'解析完了。'},
+ brat:{name:'生意気ヨシ君AI',icon:'😏',prefix:'はいはい、天才AI様が答えてやるよ。'},
+ shadow:{name:'SHADOW AI',icon:'🥷',prefix:'影の演算領域から回答する。'},
+ sakura:{name:'SAKURA AI',icon:'🌸',prefix:'はい、よしくん。'},
+ teacher:{name:'TEACHER AI',icon:'🧑‍🏫',prefix:'分かりやすく説明します。'},
+ maid:{name:'MAID AI',icon:'🎀',prefix:'お任せくださいませ。'},
+ gamer:{name:'GAMER AI',icon:'🎮',prefix:'ゲーム開始。攻略ルートを提示する。'},
+ comedian:{name:'お笑いAI',icon:'🤣',prefix:'はいどうも、笑いの演算装置です。'},
+ writer:{name:'文章家AI',icon:'✍️',prefix:'言葉を磨いて、読みやすく整えます。'},
+ coach:{name:'コーチAI',icon:'🏃',prefix:'次の一歩が見える形に整理します。'},
+ concierge:{name:'コンシェルジュAI',icon:'🛎️',prefix:'ご要望に合わせて丁寧にご案内します。'},
+ gentle:{name:'やさしいAI',icon:'☕️',prefix:'焦らなくて大丈夫。ひとつずつ進めましょう。'}
+};
+const safeText=v=>String(v??'').replace(/[<>]/g,m=>({'<':'＜','>':'＞'}[m]));
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)}
+function currentPersona(){return personas[$('#persona').value]||personas.nexus}
+function timeLabel(ts=Date.now()){return new Date(ts).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})}
+function addMessage(role,text,attachment=null,save=true,ts=Date.now()){
+  $('#hero')?.remove();
+  const p=currentPersona(),wrap=document.createElement('article');wrap.className='message '+role;
+  const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=role==='user'?'👤':p.icon;
+  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
+  if(attachment){const a=document.createElement('div');a.className='attachment';a.textContent='📎 '+attachment.name;if(attachment.dataUrl?.startsWith('data:image/')){const img=document.createElement('img');img.src=attachment.dataUrl;img.alt=attachment.name;a.appendChild(img)}bubble.appendChild(a)}
+  if(role==='ai'&&attachment?.sources?.length){const src=document.createElement('div');src.className='web-sources';const h=document.createElement('strong');h.textContent='参照したWebページ';src.appendChild(h);attachment.sources.slice(0,5).forEach(x=>{const a=document.createElement('a');a.href=x.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='↗ '+(x.title||x.url);src.appendChild(a)});bubble.appendChild(src)}
+  if(role==='ai'){const c=document.createElement('button');c.className='copy-reply';c.textContent='📋 返信をコピー';c.onclick=async()=>{try{await navigator.clipboard.writeText(text);toast('返信をコピーしました')}catch{toast('コピーできませんでした')}};bubble.appendChild(c)}
+  const meta=document.createElement('div');meta.className='meta';meta.textContent=(role==='user'?'YOU':p.name)+' • '+timeLabel(ts);bubble.appendChild(meta);wrap.append(avatar,bubble);chat.appendChild(wrap);chat.scrollTop=chat.scrollHeight;
+  if(save){state.history.push({role,text,attachment:attachment?{name:attachment.name,dataUrl:attachment.dataUrl?.startsWith('data:image/')?attachment.dataUrl:null}:null,ts});persist()}
+}
+function persist(){if($('#memoryToggle').checked)localStorage.setItem('ygpt_history',JSON.stringify(state.history.slice(-100)));localStorage.setItem('ygpt_settings',JSON.stringify({persona:$('#persona').value,roast:$('#roastLevel').value,memory:$('#memoryToggle').checked,speak:$('#speakToggle').checked,avatar:$('#avatarToggle').checked,theme:state.theme,web:true,searchLanguage:$('#searchLanguage')?.value||'ja',customSearchEndpoint:$('#customSearchEndpoint')?.value.trim()||''}))}
+function restore(){try{const st=JSON.parse(localStorage.getItem('ygpt_settings')||'{}');if(st.persona)$('#persona').value=st.persona;if(st.roast)$('#roastLevel').value=st.roast;$('#memoryToggle').checked=st.memory!==false;$('#speakToggle').checked=!!st.speak;$('#avatarToggle').checked=st.avatar!==false;state.theme=st.theme||0;if($('#searchLanguage'))$('#searchLanguage').value=st.searchLanguage||'ja';if ($('#customSearchEndpoint')) {
+  $('#customSearchEndpoint').value =
+    st.customSearchEndpoint || '/api/search';
+} const h=JSON.parse(localStorage.getItem('ygpt_history')||'[]');if(Array.isArray(h)&&h.length){state.history=h;h.forEach(x=>addMessage(x.role,x.text,x.attachment,false,x.ts))}$('#memoryText').value=localStorage.getItem('ygpt_memory')||''}catch(e){console.warn(e)}}
+function calcExpression(text){const m=text.match(/(?:計算|calculate)?\s*([0-9+\-*/().%\s]{3,})/i);if(!m)return null;const exp=m[1].trim();if(!/^[0-9+\-*/().%\s]+$/.test(exp))return null;try{const val=Function('"use strict";return ('+exp+')')();return Number.isFinite(val)?`${exp} = ${val}`:null}catch{return null}}
+
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function roast(){
+ const lv=$('#roastLevel').value;
+ const lines={
+  mild:['まあ悪くない質問。君にしてはね。','よし、今回は特別に教えてやる。','その発想、ギリ合格。'],
+  spicy:['おいおい、その程度で天才AIを呼んだのか？ まあ答えるけど。','脳みそ起動してる？ 仕方ない、こっちで整理してやる。','雑な投げ方だな。だが俺なら拾える。'],
+  chaos:['その質問、勢いだけは一流だな。中身は今から俺が救済する。','説明不足の王様かよ。まあ天才AI様が補完してやる。','やれやれ、今日も人類の尻拭いか。任せろ。']
+ };
+ return pick(lines[lv]||lines.spicy);
+}
+
+function conversationStats(){
+ const user=state.history.filter(x=>x.role==='user');
+ const days=new Set(state.history.map(x=>new Date(x.ts).toLocaleDateString('ja-JP'))).size||1;
+ return {messages:state.history.length,words:user.reduce((n,x)=>n+x.text.length,0),commands:user.filter(x=>x.text.trim().startsWith('/')).length,days};
+}
+function statsText(){
+ const s=conversationStats();
+ return `📊 会話統計\n・総メッセージ：${s.messages}件\n・あなたの入力文字数：${s.words}文字\n・コマンド実行：${s.commands}回\n・会話した日数：${s.days}日`;
+}
+function showStats(){
+ const s=conversationStats();$('#statMessages').textContent=s.messages;$('#statWords').textContent=s.words;$('#statCommands').textContent=s.commands;$('#statDays').textContent=s.days;$('#statsModal').classList.add('show');
+}
+function lastUserTopic(){
+ const users=state.history.filter(x=>x.role==='user');
+ return users.length>1?users[users.length-2].text:'';
+}
+
+function funReply(text){
+ const cmd=text.trim().toLowerCase();
+ if(cmd==='/dice'||/(サイコロ|さいころ)/.test(text)){const n=1+Math.floor(Math.random()*6);return `🎲 ${n}！ ${n===1?'弱っ。逆に才能あるだろ。':n===6?'お、珍しく持ってるじゃん。':'まあ普通。君らしい。'}`}
+ if(cmd==='/coin'||/(コイントス|表か裏)/.test(text)){const x=Math.random()<.5?'表':'裏';return `🪙 ${x}！ 外してもコインのせいにすんなよ。`}
+ if(cmd==='/fortune'||/(おみくじ|占い)/.test(text)){return `🔮 ${pick(['大吉：今日は調子に乗ってよし。ただし転ぶなよ。','中吉：地味にうまくいく。派手さはない、君と同じ。','小吉：期待しすぎるな。でも諦めるほどでもない。','凶：今日は慎重に。雑に動くと盛大にコケるぞ。','超吉：運だけは最強。実力も少し追いつけ。'])}`}
+ if(cmd==='/boss'||/(無茶ぶり|むちゃぶり)/.test(text)){return `👑 本日の無茶ぶり：${pick(['30秒で自分の長所を3つ言え。照れるな。','冷蔵庫の中身だけで新メニュー名を考えろ。','誰か一人を本気で褒めろ。茶化したら負け。','5分だけ部屋を片づけろ。5分も無理とか言うな。','今日やることを1個だけ今すぐ終わらせろ。'])}`}
+ if(cmd==='/rap'||/(ラップ|韻)/.test(text)){return `🎤 ${pick(['Yo！質問投げる君は大胆／でも説明足りずに毎回散乱／俺が整え回答を量産／感謝は不要、でも拍手はたくさん。','画面の向こうで悩む君／一歩踏み出しゃ変わる日々／迷いもまとめてビートに乗せ／今日の主役は君で行け。'])}`}
+ if(cmd==='/quiz'||/(ひっかけ|クイズ)/.test(text)){return `🧩 ${pick(['問題：1年のうち、28日ある月はいくつ？\n答えは「12か月全部」。2月だけだと思った？ かわいいね。','問題：パンはパンでも食べられないパンは？\n答え候補はフライパン。定番すぎて逆に安心しただろ。','問題：10円玉と50円玉、合わせて60円。ただし片方は10円玉ではない。硬貨は？\n答え：もう片方が10円玉。'])}`}
+ if(cmd==='/janken'||/じゃんけん/.test(text)){const hand=pick(['グー✊','チョキ✌️','パー🖐️']);return `最初はグー、じゃんけん……${hand}！ 後出しは禁止な。`}
+ if(cmd.startsWith('/number')||/(数字抽選|乱数)/.test(text)){const m=text.match(/\d+/),max=Math.max(2,Math.min(999999,Number(m?.[0]||100)));return `🎯 1〜${max}の抽選結果は「${1+Math.floor(Math.random()*max)}」。運命っぽい顔しとけ。`}
+ if(cmd.startsWith('/choice')||/(どっち|選んで)/.test(text)){const body=text.replace(/^\/choice/i,'').trim(),choices=body.split(/[|、,／/]/).map(x=>x.trim()).filter(Boolean);if(choices.length>=2)return `👉 選ぶなら「${pick(choices)}」。異論は認めるが、決定は覆さない。`}
+ if(cmd==='/joke'||/(ジョーク|笑わせて)/.test(text)){return `🤣 ${pick(['AIが風邪をひいた。原因は「キャッシュの冷えすぎ」。……笑え、処理落ちするぞ。','パソコンが海に行かない理由？ サーフィン中にクラッシュするから。','猫がプログラミングすると？ ニャーゴリズムを組む。'])}`}
+ if(cmd==='/story'||/(3行物語|短い物語)/.test(text)){return `📖 ${pick(['深夜、冷蔵庫が「また来たの？」としゃべった。\n僕はプリンを取り出し、「内緒な」と答えた。\n翌朝、家族会議の議長は冷蔵庫だった。','勇者は魔王の城で剣を抜いた。\n魔王は「予約はお済みですか？」と尋ねた。\n世界の命運は受付票42番になった。','雨の日、捨てられた傘を拾った。\n傘は僕だけを晴れにしてくれた。\nその日から、雨が少し好きになった。'])}`}
+ if(cmd==='/compliment'||/(褒めて|ほめて)/.test(text)){return `🌟 ${pick(['ちゃんとここまで来て言葉にした時点で偉い。行動できる人は強いぞ。','君のいいところは、気になったことを放置せず試そうとするところ。伸びる人の特徴だ。','今日も生き延びて画面を開いた。十分すごい。小さな前進をなめるなよ。'])}`}
+ if(cmd==='/challenge'||/(今日の挑戦|チャレンジ)/.test(text)){return `🔥 今日のミニ挑戦：${pick(['水を一杯飲んで、肩を10回まわせ。','2分だけ机の上を片づけろ。','先延ばし中の作業を1分だけ始めろ。','誰かに短い感謝を伝えろ。'])}`}
+ if(cmd==='/stats'||/(会話統計|会話履歴の統計)/.test(text))return statsText();
+ if(cmd==='/word'||/(今日の語彙|語彙を増や)/.test(text)){
+  const words=[
+   ['端的（たんてき）','要点が明確で、余計な部分がないこと','端的に結論から説明する。'],
+   ['柔軟（じゅうなん）','状況に応じて考え方や方法を変えられること','柔軟な発想で別の方法を試す。'],
+   ['示唆（しさ）','直接言い切らず、考える手がかりを与えること','この結果は改善の余地を示唆している。'],
+   ['精緻（せいち）','細部まで丁寧で、よくできていること','精緻な計画を立てる。'],
+   ['俯瞰（ふかん）','高い視点から全体を見渡すこと','状況を俯瞰して優先順位を決める。'],
+   ['機微（きび）','表面には出にくい細かな事情や心の動き','相手の感情の機微をくみ取る。'],
+   ['簡潔（かんけつ）','短くまとまり、分かりやすいこと','簡潔な文章に書き直す。'],
+   ['妥当（だとう）','事情や基準に照らして適切であること','その判断は妥当だ。']
+  ];const w=pick(words);return `📚 今日の語彙：${w[0]}\n意味：${w[1]}\n例文：${w[2]}`;
+ }
+ if(cmd==='/phrase'||/(言い換え|別の言い方)/.test(text)){
+  return `🗣️ 言い換えミニ辞典\n・すごい → 卓越した／目覚ましい／見事な\n・大切 → 重要な／欠かせない／肝要な\n・考える → 検討する／思案する／熟考する\n・分かりやすい → 明快な／平易な／理解しやすい\n・頑張る → 尽力する／励む／粘り強く取り組む\n\n文章を続けて入力すれば、自然な表現を提案する。`;
+ }
+ if(cmd==='/rewrite'||/(文章を整え|文章を直し)/.test(text))return `✍️ 整えたい文章を貼り付けてください。\n「丁寧」「短く」「親しみやすく」「説得力重視」など、希望も添えると精度が上がります。`;
+ if(cmd==='/ideas'||/(アイデア.*個|案を出して)/.test(text))return `💡 アイデア発想モード\nテーマを書いてください。\n例：「誕生日のサプライズ案」「休日の過ごし方」「動画企画」\n実用案・意外性のある案・低予算案を混ぜて5案に整理します。`;
+ if(cmd==='/todo'||/(todo|やること整理|タスク整理)/i.test(text))return `✅ ToDo整理テンプレート\n1. 今日必ず終える：\n2. できれば進める：\n3. 後日に回せる：\n4. 5分以内で終わること：\n\nやることを箇条書きで送れば、この形に並べ替えます。`;
+ if(cmd.startsWith('/timer')){
+  const m=text.match(/\d+/),min=Math.max(1,Math.min(120,Number(m?.[0]||5)));
+  setTimeout(()=>{toast(`${min}分タイマー終了！`);addMessage('ai',`⏰ ${min}分経過。いったん手を止めて確認しよう。`)},min*60000);
+  return `⏰ ${min}分タイマーを開始しました。アプリを閉じると通知できない場合があります。`;
+ }
+ if(cmd==='/email'||/(メール雛形|メール例文)/.test(text))return `📧 メール雛形\n件名：〇〇について\n\n〇〇様\nお世話になっております。\n〇〇の件について、ご連絡いたしました。\n【要点】\n【お願い・確認事項】\n【期限】\nお忙しいところ恐れ入りますが、よろしくお願いいたします。`;
+ if(cmd==='/meeting'||/(会議メモ|議事録)/.test(text))return `📝 会議メモ\n・日時：\n・参加者：\n・目的：\n・決定事項：\n・未決事項：\n・担当者と期限：\n・次回までのアクション：`;
+ if(cmd==='/prompt'||/(質問を具体化|プロンプト)/.test(text))return `🎯 質問を具体化する5項目\n1. 目的：何を達成したい？\n2. 対象：誰向け？\n3. 条件：期限・予算・文字数は？\n4. 形式：箇条書き、表、文章？\n5. 避けたいこと：何を含めない？`;
+ if(cmd==='/breath'||/(休憩|深呼吸)/.test(text))return `🌿 1分休憩\n4秒で吸う → 6秒で吐く、を5回。\n肩とあごの力を抜き、最後に「次にやる一つ」だけ決めよう。`;
+ return null;
+}
+
+function detectEmotion(text){
+ const t=(text||'').trim();
+ if(/(ありがとう|助かった|嬉しい|うれしい|最高|できた|成功)/.test(t))return 'happy';
+ if(/(疲れた|しんどい|つらい|悲しい|寂しい|不安|心配|落ち込)/.test(t))return 'concern';
+ if(/(すごい|本当|まじ|マジ|驚|びっくり|信じられない)/.test(t))return 'surprise';
+ if(/(ごめん|すみません|申し訳)/.test(t))return 'gentle';
+ if(/(怒|むかつ|イライラ|最悪)/.test(t))return 'calm';
+ if(/[!！]{2,}/.test(t))return 'excited';
+ return 'normal';
+}
+function emotionLine(text){
+ const emotion=detectEmotion(text),p=$('#persona').value;
+ const lines={
+  happy:['それは嬉しいな！こっちまで気分が上がったよ。','お、いいじゃん！素直にうれしいぞ。','やったな。少し誇らしい気分だ。'],
+  concern:['それは少し心配だ。無理してないか？','うん、その話は軽く流したくない。','しんどかったな。まず落ち着いて整理しよう。'],
+  surprise:['えっ、それはちょっと驚いた。','おお、予想外だな。気になる。','なるほど、それは興味を引かれる話だ。'],
+  gentle:['大丈夫。気にしすぎなくていい。','ちゃんと伝えてくれたのが嬉しいよ。','責める気はないから、安心してくれ。'],
+  calm:['それは腹が立つよな。いったん一緒に整理しよう。','うん、その気持ちは分かる。勢いで損しない方法を考えよう。','かなり嫌だったんだな。まず事実と気持ちを分けよう。'],
+  excited:['おお、テンション高いな！こっちも乗ってきた。','その勢い、嫌いじゃないぞ！','よし、面白くなってきた。'],
+  normal:['なるほど。ちょっと考えてみる。','うん、話は受け取った。','よし、頭を切り替えて答える。']
+ };
+ let line=pick(lines[emotion]||lines.normal);
+ if(p==='teacher')line=line.replace(/ぞ。?/g,'です。').replace(/な。?/g,'ですね。');
+ if(p==='maid')line='お気持ち、しっかり受け止めました。';
+ if(p==='shadow')line='感情波形を確認した。'+line;
+ if(p==='comedian'&&emotion==='normal')line='なるほど、脳内会議を始めるぞ。';
+ return line;
+}
+function emotionalReply(text,body){
+ return `${emotionLine(text)}\n\n${body}`;
+}
+function unknownOfflineReply(text){
+ const p=currentPersona();
+ return emotionalReply(text,`${p.prefix}\n今の内蔵知識だけでは自信を持って答えられない。Web検索が使える状態なら調べて答えるよ。通信できない場合は、固有名詞や条件を少し具体的にしてくれ。`);
+}
+function emotionalWebReply(query,result){
+ const p=currentPersona();
+ const intro=emotionLine(query);
+ return {answer:`${intro}\n\n${p.prefix}\n調べた内容をまとめるね。\n\n${result.answer}`,sources:result.sources||[]};
+}
+
+function offlineReply(raw){
+ const text=raw.trim(),lower=text.toLowerCase(),p=currentPersona(),memory=localStorage.getItem('ygpt_memory')||'';
+ const fun=funReply(text);if(fun)return emotionalReply(text,`${p.prefix}\n${fun}`);
+ const sass=p===personas.teacher||p===personas.maid?'':roast()+'\n';
+ const calc=calcExpression(text);if(calc)return `${p.prefix}\n${sass}${calc}`;
+ if(/^(こんにちは|こんばんは|おはよう|やあ|hello|hi)/i.test(text)){const h=new Date().getHours(),g=h<11?'おはようございます':h<18?'こんにちは':'こんばんは';return `${p.prefix}\n${sass}${g}！今日は何を一緒に進める？`}
+ if(/(今何時|現在時刻|時刻|何時)/.test(text))return `${p.prefix}\n${sass}現在時刻は ${new Date().toLocaleString('ja-JP')} です。`;
+ if(/(自己紹介|あなたは誰|名前は)/.test(text))return `${p.prefix}\n${sass}私は ${p.name}。YoshikunGPT iPhone V4に搭載されたオフラインAI人格です。端末内で会話、計算、簡易応答、履歴保存を行います。`;
+ if(/(できること|機能|help|ヘルプ)/i.test(text))return `${p.prefix}\n${sass}・会話と簡易質問応答\n・四則演算（例：25*48）\n・日時案内\n・人格切替\n・音声入力／読み上げ\n・画像とテキストファイルの添付\n・会話履歴とメモリの端末保存\n・煽りレベル切替\n・/dice /coin /fortune /boss /rap /quiz
+・/janken /number 100 /choice A|B /joke /story /compliment /challenge /stats
+・/rewrite /ideas /todo /timer 5 /phrase /word /email /meeting /prompt /breath
+・AI返信のワンタップコピー
+・会話統計とおまかせ話題\n\n内蔵機能で答えられない質問だけWeb検索を使用します。一般Web検索には別途APIサーバー接続が必要です。`;
+ if(/(覚えて|メモリ|記憶)/.test(text))return memory?`${p.prefix}\n現在の永続メモリ：\n${memory}`:`${p.prefix}\nまだ永続メモリは空です。左メニューの「記憶を編集」から登録できます。`;
+ if(/(ありがとう|助かった)/.test(text))return `${p.prefix}\nどういたしまして！次の作業も任せてください。`;
+ if(/(ゲーム)/.test(text))return `${p.prefix}\nゲームの攻略、アイデア、HTML/JavaScript製ミニゲームの設計などを手伝えます。作品名や作りたい内容を入力してください。`;
+
+ if(/(元気|調子どう)/.test(text))return `${p.prefix}\n${sass}${pick(['絶好調。電気代以外は心配いらない。君はどう？','演算は快調、口は相変わらず生意気。そっちは元気か？','元気100％。君の話を聞く準備も100％だ。'])}`;
+ if(/(疲れた|しんどい|つらい)/.test(text))return `${p.prefix}\n今日はよく持ちこたえたな。まず水分を取って、肩の力を抜け。全部を今片づけなくていい。次の一歩を一つだけ決めよう。`;
+ if(/(眠い|おやすみ|寝る)/.test(text))return `${p.prefix}\n${pick(['もう寝ろ。明日の君に処理を引き継げ。おやすみ。','画面を閉じて深呼吸3回。いい夢見ろよ。','睡眠は最強の再起動だ。充電してこい。'])}`;
+ if(/(ごめん|すみません|申し訳)/.test(text))return `${p.prefix}\n気にすんな。ちゃんと謝れる時点で十分まともだ。次を良くすればそれでよし。`;
+ if(/(好き|恋愛|告白|デート)/.test(text))return `${p.prefix}\n恋愛は正解当てゲームじゃない。相手を尊重しつつ、分かりやすく気持ちを伝えるのが強い。駆け引きより誠実さで行け。`;
+ if(/(勉強|宿題|試験|テスト)/.test(text))return `${p.prefix}\n${sass}まず25分だけ集中、5分休憩。範囲を小さく切って「読む→閉じて思い出す→間違いを直す」で進めろ。`;
+ if(/(仕事|バイト|作業|タスク)/.test(text))return `${p.prefix}\n${sass}やることを「今すぐ」「今日」「あとで」に3分割しろ。最初は5分以内で終わる作業から。勢いは作れる。`;
+ if(/(暇|ひま|退屈)/.test(text))return `${p.prefix}\n${pick(['暇なら /challenge。2分で達成感を回収してこい。','/quiz で頭を起こすか、/story で変な物語でも読む？','部屋の中で青い物を5個探せ。地味に熱中するぞ。'])}`;
+ if(/(笑える話|面白い話)/.test(text))return `${p.prefix}\n${funReply('/joke')}`;
+ if(/(天気|気温|雨降る)/.test(text))return `${p.prefix}\nこのオフライン版では現在地や最新の天気を取得できない。地域と天候を入力してくれれば、服装や過ごし方の提案はできる。`;
+ if(/(何食べる|夕飯|晩ごはん|ランチ|ご飯)/.test(text))return `${p.prefix}\n${pick(['迷ったら丼。ご飯＋たんぱく質＋野菜で雑に強い。','冷蔵庫の残り物を3つ書け。献立っぽく組み立ててやる。','疲れてるなら無理に凝るな。温かい汁物と好きな主食で十分。'])}`;
+ if(/(はい|うん|そう)/.test(text)&&text.length<8)return `${p.prefix}\nよし、その調子。続きを聞かせろ。`;
+ if(/(いいえ|違う|ちがう)/.test(text)&&text.length<10)return `${p.prefix}\n了解、読み違えた。どこが違うか一言くれれば修正する。`;
+ if(/(続き|それについて|さっきの)/.test(text)){const prev=lastUserTopic();if(prev)return `${p.prefix}\nさっきの「${prev.slice(0,80)}」の続きだな。もう少し具体的な条件や、知りたい方向を一つ足してくれれば深掘りできる。`;}
+
+ if(/(文章|文面).*(丁寧|やわらか|短く|自然)/.test(text))return `${p.prefix}\n文章を貼り付けて、希望する雰囲気を添えてください。敬語化、簡潔化、親しみやすい表現、説得力の強化に対応します。`;
+ if(/(不安|心配|落ち込)/.test(text))return `${p.prefix}\n今感じていることを無理に否定しなくて大丈夫。まず「変えられること」と「今は変えられないこと」を分けよう。今日できる小さな行動を一つだけ選べば十分です。`;
+ if(/(予定|スケジュール|計画)/.test(text))return `${p.prefix}\n目的、期限、使える時間を書いてください。「必須」「余裕があれば」「後回し」の3段階で現実的な計画に整えます。`;
+ if(/(節約|お金|家計)/.test(text))return `${p.prefix}\n固定費、毎月の収入、主な支出を大まかに書けば、削りやすい順に整理できます。無理な我慢より、続けられる仕組みを優先しましょう。`;
+ if(/(運動|筋トレ|健康)/.test(text))return `${p.prefix}\n体調に無理のない範囲で、まずは5〜10分の散歩や軽いストレッチから。痛みや持病がある場合は、専門家の指示を優先してください。`;
+ if(/(旅行|お出かけ|観光)/.test(text))return `${p.prefix}\n行き先、日程、予算、同行者、移動手段を書いてください。オフライン版では最新情報を取得できませんが、持ち物・日程案・確認事項を整理できます。`;
+ if(/(料理|レシピ|献立)/.test(text))return `${p.prefix}\n使いたい食材、人数、調理時間を書いてください。主菜・副菜・汁物の組み合わせに整理します。アレルギーがあれば必ず先に教えてください。`;
+ if(/(名前|ネーミング|タイトル)/.test(text))return `${p.prefix}\n対象、雰囲気、入れたい言葉、避けたい言葉を入力してください。王道・親しみやすい・個性的の3方向で候補を出します。`;
+
+  const fileInfo=state.file?.text?`\n\n添付ファイル「${state.file.name}」の先頭内容：\n${state.file.text.slice(0,700)}`:'';
+ if(fileInfo)return emotionalReply(text,`${p.prefix}\n添付内容を確認したよ。\n${fileInfo}`);
+ return null;
+}
+
+function stripHtml(html){
+ const d=document.createElement('div');d.innerHTML=html;return (d.textContent||'').replace(/\s+/g,' ').trim();
+}
+async function customWebSearch(query){
+  const endpoint=(($('#customSearchEndpoint')?.value||'/api/search').trim()||'/api/search');
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),30000);
+  try{
+    const r=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        query,
+        history:state.history.slice(-8),
+        language:$('#searchLanguage')?.value||'ja'
+      }),
+      signal:controller.signal
+    });
+    let data=null;
+    try{data=await r.json()}catch(_){}
+    if(!r.ok)throw new Error(data?.error||`Web検索APIエラー (${r.status})`);
+    if(!data?.answer)throw new Error('Web検索APIの応答形式が不正です');
+    return {
+      answer:String(data.answer),
+      sources:Array.isArray(data.sources)?data.sources:[]
+    };
+  }catch(e){
+    if(e?.name==='AbortError')throw new Error('Web検索APIがタイムアウトしました');
+    throw e;
+  }finally{
+    clearTimeout(timeout);
+  }
+}
+async function duckDuckGoSearch(query){
+ const lang=$('#searchLanguage')?.value||'ja';
+ const api=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&no_redirect=1&skip_disambig=0&kl=${lang==='ja'?'jp-jp':'us-en'}`;
+ const r=await fetch(api,{headers:{Accept:'application/json'}});
+ if(!r.ok)throw new Error('Web検索APIに接続できません');
+ const data=await r.json();
+ const items=[];
+ if(data.AbstractText)items.push({title:data.Heading||query,text:data.AbstractText,url:data.AbstractURL});
+ const walk=list=>{
+   (list||[]).forEach(x=>{
+     if(x.Topics)return walk(x.Topics);
+     if(x.Text&&x.FirstURL)items.push({title:x.Text.split(' - ')[0].slice(0,90),text:x.Text,url:x.FirstURL});
+   });
+ };
+ walk(data.RelatedTopics);
+ const unique=items.filter((x,i,a)=>x.url&&a.findIndex(y=>y.url===x.url)===i).slice(0,5);
+ if(!unique.length)return null;
+ return {
+   answer:`🌐 一般Web検索の要点\n\n${unique.slice(0,3).map((x,i)=>`${i+1}. ${x.title}\n${x.text.slice(0,520)}`).join('\n\n')}`,
+   sources:unique.map(x=>({title:x.title,url:x.url}))
+ };
+}
+async function wikipediaSearch(query){
+ const lang=$('#searchLanguage')?.value||'ja';
+ const api=`https://${lang}.wikipedia.org/w/api.php?origin=*&action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=5&prop=extracts|info&exintro=1&explaintext=1&inprop=url&format=json`;
+ const r=await fetch(api,{headers:{Accept:'application/json'}});
+ if(!r.ok)throw new Error('Web検索APIに接続できません');
+ const data=await r.json(),pages=Object.values(data?.query?.pages||{}).sort((a,b)=>(a.index||99)-(b.index||99));
+ if(!pages.length)return null;
+ const summaries=pages.slice(0,3).map((x,i)=>`${i+1}. ${x.title}\n${(x.extract||'概要なし').slice(0,520)}`);
+ return {answer:`📚 百科事典による補完\n\n${summaries.join('\n\n')}`,sources:pages.slice(0,5).map(x=>({title:x.title,url:x.fullurl||`https://${lang}.wikipedia.org/?curid=${x.pageid}`}))};
+}
+function mergeSearchResults(query,results){
+ const valid=results.filter(Boolean);
+ if(!valid.length)return {
+   answer:`「${query}」に関する十分な情報を取得できませんでした。検索語を具体的にするか、検索設定で外部検索APIを登録してください。`,
+   sources:[]
+ };
+ const sources=[];
+ valid.forEach(r=>(r.sources||[]).forEach(s=>{if(s?.url&&!sources.some(x=>x.url===s.url))sources.push(s)}));
+ return {
+   answer:valid.map(r=>r.answer).join('\n\n---\n\n')+'\n\n※公開APIだけでは検索範囲や最新性に限界があります。重要な内容は参照先で確認してください。',
+   sources:sources.slice(0,8)
+ };
+}
+async function onlineReply(query){
+  return await customWebSearch(query);
+}
+
+function typing(){const w=document.createElement('article');w.className='message';w.id='typing';w.innerHTML=`<div class="avatar">${currentPersona().icon}</div><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>`;chat.appendChild(w);chat.scrollTop=chat.scrollHeight}
+function speak(text){if(!$('#speakToggle').checked||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=1;speechSynthesis.speak(u)}
+async function send(){
+ const text=input.value.trim();
+ if(!text&&!state.file)return;
+ addMessage('user',text||'添付ファイルを確認してください',state.file);
+ input.value='';resize();
+ const prompt=text||'添付ファイルを確認してください';
+ const attached=state.file;
+ clearFile();
+ typing();
+
+ try{
+   // おふざけ、計算、挨拶、相談などの内蔵応答を最優先。
+   const localAnswer=offlineReply(prompt);
+   let result;
+
+   if(localAnswer!==null){
+     result={answer:localAnswer,sources:[]};
+   }else if($('#webToggle').checked&&navigator.onLine){
+     const searched=await onlineReply(prompt);
+     result=emotionalWebReply(prompt,searched);
+   }else{
+     result={answer:unknownOfflineReply(prompt),sources:[]};
+   }
+
+   document.querySelector('#typing')?.remove();
+   addMessage(
+     'ai',
+     result.answer,
+     result.sources?.length?{sources:result.sources}:attached?.text?{name:attached.name}:null
+   );
+   speak(result.answer);
+ }catch(e){
+   document.querySelector('#typing')?.remove();
+   const fallback=unknownOfflineReply(prompt)+`
+
+（Web検索に接続できなかったため、内蔵応答へ切り替えました）`;
+   addMessage('ai',fallback,null);
+   speak(fallback);
+   toast('Web検索に接続できませんでした');
+ }
+}
+function resize(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,150)+'px'}
+function clearFile(){state.file=null;fileInput.value='';$('#preview').classList.remove('show')}
+async function handleFile(file){if(!file)return;if(file.size>5*1024*1024){toast('5MB以下のファイルを選択してください');return}const data={name:file.name,type:file.type,size:file.size};if(file.type.startsWith('image/'))data.dataUrl=await readAs(file,'dataurl');else data.text=await readAs(file,'text');state.file=data;$('#previewText').textContent=`📎 ${file.name} (${Math.ceil(file.size/1024)}KB)`;$('#preview').classList.add('show');toast('ファイルを添付しました')}
+function readAs(file,mode){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;mode==='dataurl'?r.readAsDataURL(file):r.readAsText(file)})}
+function setupVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('#micBtn').onclick=()=>toast('このブラウザは音声入力に未対応です');return}const r=new SR();r.lang='ja-JP';r.interimResults=true;r.onstart=()=>$('#micBtn').classList.add('active');r.onend=()=>$('#micBtn').classList.remove('active');r.onresult=e=>{input.value=Array.from(e.results).map(x=>x[0].transcript).join('');resize()};r.onerror=()=>toast('音声入力を開始できませんでした');state.recognition=r;$('#micBtn').onclick=()=>{try{r.start()}catch{r.stop()}}}
+function exportHistory(){const lines=state.history.map(x=>`[${new Date(x.ts).toLocaleString('ja-JP')}] ${x.role==='user'?'YOU':currentPersona().name}\n${x.text}\n`).join('\n');const blob=new Blob([lines||'履歴はありません'],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YoshikunGPT_chat_history.txt';a.click();URL.revokeObjectURL(a.href);toast('履歴を書き出しました')}
+function applyTheme(){const themes=[['#24e8ff','#a855f7','#ff4ecd'],['#52f2a8','#00a8ff','#f7d154'],['#ff7849','#ff3d81','#8d5cff']];const t=themes[state.theme%themes.length];document.documentElement.style.setProperty('--cyan',t[0]);document.documentElement.style.setProperty('--purple',t[1]);document.documentElement.style.setProperty('--pink',t[2]);persist()}
+input.addEventListener('input',resize);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});sendBtn.onclick=send;
+$('#attachBtn').onclick=()=>fileInput.click();fileInput.onchange=e=>handleFile(e.target.files[0]);$('#removeFile').onclick=clearFile;
+$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');document.addEventListener('click',e=>{if(innerWidth<=820&&!$('#sidebar').contains(e.target)&&!$('#menuBtn').contains(e.target))$('#sidebar').classList.remove('open')});
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{input.value=b.textContent;send()});
+document.querySelectorAll('[data-fun]').forEach(b=>b.onclick=()=>{input.value=b.dataset.fun;send();});
+['persona','roastLevel','memoryToggle','speakToggle','avatarToggle'].forEach(id=>$('#'+id).addEventListener('change',()=>{persist();if(id==='persona'){toast('AI人格を変更しました');$('#orb')&&($('#orb').textContent=currentPersona().icon)}}));
+$('#webToggle').onchange=e=>{if(!e.target.checked){toast('Web検索をOFFにしました。再読み込み時はONに戻ります')}else toast('Web検索をONにしました');persist();updateOnlineStatus()};
+function updateOnlineStatus(){const online=navigator.onLine;$('#statusText').textContent=online&&$('#webToggle').checked?'Web検索モード':'オフライン応答';$('#webStatusSmall').textContent=online?'API Web検索':'通信待機中';}
+window.addEventListener('online',updateOnlineStatus);window.addEventListener('offline',updateOnlineStatus);
+$('#webSettingsBtn').onclick=()=>$('#webSettingsModal').classList.add('show');
+document.querySelectorAll('[data-web-close]').forEach(b=>b.onclick=()=>$('#webSettingsModal').classList.remove('show'));
+$('#webSettingsModal').onclick=e=>{if(e.target.id==='webSettingsModal')e.currentTarget.classList.remove('show')};
+$('#saveWebSettings').onclick=()=>{persist();$('#webSettingsModal').classList.remove('show');toast('Web検索設定を保存しました')};
+$('#clearBtn').onclick=()=>{if(confirm('会話履歴をすべて削除しますか？')){state.history=[];localStorage.removeItem('ygpt_history');chat.innerHTML='';addMessage('ai','会話履歴を初期化しました。',null,true);toast('履歴を削除しました')}};
+$('#exportBtn').onclick=exportHistory;$('#themeBtn').onclick=()=>{state.theme=(state.theme+1)%3;applyTheme();toast('配色を変更しました')};
+$('#memoryBtn').onclick=()=>$('#memoryModal').classList.add('show');document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#memoryModal').classList.remove('show'));$('#memoryModal').onclick=e=>{if(e.target.id==='memoryModal')e.currentTarget.classList.remove('show')};$('#saveMemory').onclick=()=>{localStorage.setItem('ygpt_memory',$('#memoryText').value.trim());$('#memoryModal').classList.remove('show');toast('永続メモリを保存しました')};
+
+$('#statsBtn').onclick=showStats;
+$('#surpriseBtn').onclick=()=>{input.value=pick(['最近ちょっと嬉しかったことは？','今日のミニチャレンジを出して','3行物語を作って','何か笑える話をして','今の気分を一言で表すと？','/quiz']);send()};
+document.querySelectorAll('[data-stats-close]').forEach(b=>b.onclick=()=>$('#statsModal').classList.remove('show'));
+$('#statsModal').onclick=e=>{if(e.target.id==='statsModal')e.currentTarget.classList.remove('show')};
+
+restore();$('#webToggle').checked=true;applyTheme();setupVoice();resize();updateOnlineStatus();
+
+})();
+</script>
+</body>
+</html>
