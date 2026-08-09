@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: yoshikungpt-api
+    runtime: node
+    rootDir: api-server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
+      - key: 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
+
+        sync: false
+      - key:  https://yoshikurikuri520-dev.github.io/Yoshikun-API/
+        value: 'same-origin'
