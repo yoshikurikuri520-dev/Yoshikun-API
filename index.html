@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#070b1c">
-<title>YoshikunGPT Complete Web Edition</title>
+<title>YoshikunGPT iPhone V4</title>
 <style>
 :root{
   --bg:#050816;--panel:#0d1429;--panel2:#131d38;--line:#25355f;--text:#f7fbff;
@@ -87,352 +87,6 @@ body::after{
 .stat-box{padding:14px;border:1px solid var(--line);border-radius:13px;background:#101a35;text-align:center}
 .stat-box strong{display:block;font-size:25px;color:var(--cyan)}.stat-box span{font-size:12px;color:var(--muted)}
 
-
-.web-sources{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.12)}
-.web-sources strong{display:block;font-size:12px;color:var(--cyan);margin-bottom:6px}
-.web-sources a{display:block;color:#bfefff;font-size:12px;line-height:1.5;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.web-sources a:hover{text-decoration:underline}
-.search-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);margin-bottom:6px}
-.modal-box input,.modal-box select{width:100%;background:#091126;color:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;margin:6px 0 12px}
-.help{font-size:12px;color:var(--muted);line-height:1.6}
-
-
-/* ===== Smartphone compact layout ===== */
-@media (max-width: 820px) {
-  html, body {
-    width: 100%;
-    height: 100%;
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  body {
-    font-size: 14px;
-  }
-
-  .app {
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: 0;
-  }
-
-  header {
-    min-height: 56px;
-    gap: 8px;
-    padding: 7px 9px;
-  }
-
-  .logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 11px;
-    font-size: 19px;
-  }
-
-  .brand h1 {
-    max-width: 47vw;
-    font-size: 15px;
-    letter-spacing: 0;
-  }
-
-  .brand small {
-    display: block;
-    max-width: 48vw;
-    overflow: hidden;
-    font-size: 10px;
-    line-height: 1.2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .icon-btn {
-    min-width: 36px;
-    height: 36px;
-    padding: 6px 8px;
-    border-radius: 10px;
-  }
-
-  .status {
-    gap: 5px;
-    font-size: 11px;
-  }
-
-  .dot {
-    width: 7px;
-    height: 7px;
-  }
-
-  .layout,
-  .main {
-    min-height: 0;
-    height: 100%;
-  }
-
-  .sidebar {
-    top: calc(56px + env(safe-area-inset-top));
-    bottom: 0;
-    width: min(284px, 86vw);
-    padding: 10px;
-    overscroll-behavior: contain;
-  }
-
-  .side-title {
-    margin: 10px 3px 6px;
-    font-size: 10px;
-  }
-
-  .card {
-    padding: 9px;
-    margin-bottom: 7px;
-    border-radius: 12px;
-  }
-
-  .card label,
-  .feature strong {
-    font-size: 12px;
-  }
-
-  .feature small,
-  .bgm-now {
-    font-size: 10px;
-  }
-
-  .card select,
-  .card input[type="text"],
-  .card input[type="url"] {
-    min-height: 38px;
-    padding: 8px;
-    font-size: 12px;
-  }
-
-  .side-actions {
-    gap: 6px;
-  }
-
-  .side-actions button,
-  .bgm-card button {
-    min-height: 36px;
-    padding: 7px 5px;
-    font-size: 11px;
-  }
-
-  .main {
-    grid-template-rows: minmax(0, 1fr) auto;
-  }
-
-  .chat {
-    padding: 10px 8px 8px;
-    scroll-padding-bottom: 82px;
-  }
-
-  .hero {
-    width: 100%;
-    margin: 6px auto 12px;
-    padding: 14px 10px;
-    border-radius: 17px;
-  }
-
-  .hero .orb {
-    width: 56px;
-    height: 56px;
-    border-radius: 18px;
-    font-size: 28px;
-  }
-
-  .hero h2 {
-    margin: 10px 0 5px;
-    font-size: 18px;
-  }
-
-  .hero p {
-    margin: 0;
-    font-size: 12px;
-    line-height: 1.55;
-  }
-
-  .chips {
-    gap: 5px;
-    margin-top: 10px;
-  }
-
-  .chip {
-    padding: 6px 9px;
-    font-size: 11px;
-  }
-
-  .message {
-    gap: 7px;
-    margin: 9px auto;
-  }
-
-  .avatar {
-    flex-basis: 30px;
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
-    font-size: 15px;
-  }
-
-  .bubble,
-  .user .bubble {
-    max-width: calc(100% - 42px);
-    padding: 9px 11px;
-    border-radius: 14px;
-    font-size: 13px;
-    line-height: 1.55;
-  }
-
-  .meta {
-    margin-top: 5px;
-    font-size: 9px;
-  }
-
-  .attachment img {
-    max-width: 100%;
-    max-height: 180px;
-  }
-
-  .composer-wrap {
-    padding: 5px 6px calc(5px + env(safe-area-inset-bottom));
-    background: rgba(5, 8, 22, .97);
-  }
-
-  .preview {
-    margin-bottom: 5px;
-    padding: 6px 8px;
-    font-size: 11px;
-  }
-
-  .composer {
-    width: 100%;
-    grid-template-columns: 38px minmax(0, 1fr) 38px 52px;
-    gap: 4px;
-    padding: 5px;
-    border-radius: 14px;
-  }
-
-  .composer textarea {
-    min-height: 38px;
-    max-height: 96px;
-    padding: 8px 5px;
-    font-size: 16px;
-    line-height: 1.35;
-  }
-
-  .composer button {
-    min-width: 38px;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border-radius: 10px;
-    font-size: 15px;
-  }
-
-  .composer .send {
-    grid-column: auto;
-    width: 52px;
-    min-width: 52px;
-    padding: 0 5px;
-    font-size: 12px;
-  }
-
-  .toast {
-    bottom: calc(72px + env(safe-area-inset-bottom));
-    max-width: calc(100vw - 24px);
-    padding: 9px 12px;
-    font-size: 12px;
-    text-align: center;
-  }
-
-  .modal {
-    padding: 10px;
-  }
-
-  .modal-box {
-    max-height: 88dvh;
-    padding: 14px;
-    border-radius: 15px;
-  }
-
-  .modal-box h3 {
-    font-size: 17px;
-  }
-
-  .stats-grid {
-    gap: 7px;
-    margin: 10px 0;
-  }
-
-  .stat-box {
-    padding: 10px 6px;
-  }
-
-  .stat-box strong {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 390px) {
-  .brand h1 {
-    max-width: 43vw;
-    font-size: 14px;
-  }
-
-  .brand small {
-    max-width: 43vw;
-  }
-
-  .hero p {
-    font-size: 11px;
-  }
-
-  .chip:nth-child(n+7) {
-    display: none;
-  }
-
-  .composer {
-    grid-template-columns: 36px minmax(0, 1fr) 36px 48px;
-  }
-
-  .composer button {
-    width: 36px;
-    min-width: 36px;
-    height: 36px;
-  }
-
-  .composer .send {
-    width: 48px;
-    min-width: 48px;
-  }
-}
-
-@media (max-height: 680px) and (max-width: 820px) {
-  .hero {
-    padding: 10px 8px;
-  }
-
-  .hero .orb {
-    width: 44px;
-    height: 44px;
-    font-size: 23px;
-  }
-
-  .hero h2 {
-    margin: 7px 0 3px;
-    font-size: 16px;
-  }
-
-  .hero p {
-    display: none;
-  }
-
-  .chips {
-    margin-top: 7px;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -440,8 +94,8 @@ body::after{
 <header>
   <button class="icon-btn" id="menuBtn" aria-label="メニュー">☰</button>
   <div class="logo">⚡</div>
-  <div class="brand"><h1>YoshikunGPT Complete Web Edition</h1><small>Web検索優先 • オフライン応答にも対応</small></div>
-  <div class="status"><i class="dot"></i><span id="statusText">Web検索モード</span></div>
+  <div class="brand"><h1>YoshikunGPT iPhone V4</h1><small>iPhone Hybrid AI • OpenAI API Ready</small></div>
+  <div class="status"><i class="dot"></i><span id="statusText">内蔵AI稼働中</span></div>
 </header>
 <div class="layout">
 <aside class="sidebar" id="sidebar">
@@ -450,7 +104,11 @@ body::after{
   <div class="card"><label for="roastLevel">😈 煽りレベル</label><select id="roastLevel"><option value="mild">小生意気</option><option value="spicy" selected>クソ生意気</option><option value="chaos">限界煽り</option></select></div>
   <div class="card feature"><span class="ico">🧠</span><div><strong>永続メモリ</strong><small>会話履歴を端末保存</small></div><label class="switch"><input id="memoryToggle" type="checkbox" checked><span></span></label></div>
   <div class="card feature"><span class="ico">🔊</span><div><strong>読み上げ</strong><small>AI回答を音声再生</small></div><label class="switch"><input id="speakToggle" type="checkbox"><span></span></label></div>
-  <div class="card feature"><span class="ico">🌐</span><div><strong>Web Search</strong><small id="webStatusSmall">API Web検索</small></div><label class="switch"><input id="webToggle" type="checkbox" checked><span></span></label></div>
+  <div class="card">
+    <div class="feature"><span class="ico">🌐</span><div><strong>OpenAI API</strong><small id="apiStatusSmall">内蔵AIモード</small></div><label class="switch"><input id="webToggle" type="checkbox"><span></span></label></div>
+    <input id="apiServerUrl" type="url" inputmode="url" autocapitalize="none" autocomplete="off" placeholder="https://あなたのAPI.onrender.com" style="width:100%;margin-top:10px;border:1px solid var(--line);background:#091126;color:#fff;border-radius:10px;padding:10px">
+    <div class="side-actions" style="margin-top:8px"><button id="saveApiServer" type="button">URL保存</button><button id="testApiServer" type="button">接続テスト</button></div>
+  </div>
   <div class="card feature"><span class="ico">🎭</span><div><strong>Live Avatar</strong><small>反応アニメーション</small></div><label class="switch"><input id="avatarToggle" type="checkbox" checked><span></span></label></div>
 
   <div class="card bgm-card">
@@ -472,7 +130,7 @@ body::after{
   </div>
 
   <div class="side-title">TOOLS</div>
-  <div class="card"><div class="side-actions"><button id="memoryBtn">記憶を編集</button><button id="webSettingsBtn">検索設定</button><button id="exportBtn">履歴出力</button><button id="themeBtn">配色変更</button><button id="statsBtn">会話統計</button><button id="surpriseBtn">おまかせ話題</button><button id="clearBtn" class="danger">全消去</button></div></div>
+  <div class="card"><div class="side-actions"><button id="memoryBtn">記憶を編集</button><button id="exportBtn">履歴出力</button><button id="themeBtn">配色変更</button><button id="statsBtn">会話統計</button><button id="surpriseBtn">おまかせ話題</button><button id="clearBtn" class="danger">全消去</button></div></div>
   <div class="card"><label>🧰 便利ツール</label><div class="side-actions">
 <button data-fun="/rewrite">文章を整える</button><button data-fun="/ideas">アイデア5個</button>
 <button data-fun="/todo">ToDo整理</button><button data-fun="/timer 5">5分タイマー</button>
@@ -486,7 +144,7 @@ body::after{
 </aside>
 <main class="main">
   <section class="chat" id="chat" aria-live="polite">
-    <div class="hero" id="hero"><div class="orb" id="orb">🤖</div><h2>COMPLETE WEB MODE 起動完了</h2><p>サーバーAPIのWeb検索を利用し、複数の情報源を参照してAI回答を生成します。APIに接続できない時はオフライン応答へ切り替えます。</p><div class="chips"><button class="chip">できることを教えて</button><button class="chip">今日の挨拶</button><button class="chip">25×48を計算</button><button class="chip">/fortune</button><button class="chip">/boss</button><button class="chip">/janken</button><button class="chip">/joke</button><button class="chip">/story</button></div></div>
+    <div class="hero" id="hero"><div class="orb" id="orb">🤖</div><h2>GOD MODE V4 起動完了</h2><p>内蔵AIとOpenAI APIを切り替えられる、ちょっと生意気なよしくんAIです。API未接続時や通信失敗時は内蔵AIへ自動で戻ります。</p><div class="chips"><button class="chip">できることを教えて</button><button class="chip">今日の挨拶</button><button class="chip">25×48を計算</button><button class="chip">/fortune</button><button class="chip">/boss</button><button class="chip">/janken</button><button class="chip">/joke</button><button class="chip">/story</button></div></div>
   </section>
   <div class="composer-wrap"><div class="preview" id="preview"><span id="previewText"></span><button id="removeFile">✕</button></div><div class="composer"><button id="attachBtn" title="ファイル添付">📎</button><textarea id="messageInput" rows="1" placeholder="メッセージを入力…（Enterで送信 / Shift+Enterで改行）"></textarea><button id="micBtn" class="mic" title="音声入力">🎤</button><button id="sendBtn" class="send">送信</button><input id="fileInput" type="file" accept="image/*,.txt,.md,.json,.csv,.html,.css,.js" hidden></div></div>
 </main>
@@ -496,26 +154,13 @@ body::after{
 <div class="toast" id="toast"></div>
 <div class="modal" id="statsModal"><div class="modal-box"><h3>📊 会話統計</h3><div class="stats-grid"><div class="stat-box"><strong id="statMessages">0</strong><span>総メッセージ</span></div><div class="stat-box"><strong id="statWords">0</strong><span>入力文字数</span></div><div class="stat-box"><strong id="statCommands">0</strong><span>おふざけ実行</span></div><div class="stat-box"><strong id="statDays">1</strong><span>会話日数</span></div></div><div class="modal-actions"><button data-stats-close>閉じる</button></div></div></div>
 <div class="modal" id="memoryModal"><div class="modal-box"><h3>🧠 永続メモリ</h3><p style="color:var(--muted)">AIに覚えさせたい内容を入力してください。</p><textarea id="memoryText" placeholder="例：私の名前はよしくん。ゲームが好き。"></textarea><div class="modal-actions"><button data-close>閉じる</button><button id="saveMemory">保存</button></div></div></div>
-
-<div class="modal" id="webSettingsModal"><div class="modal-box">
-<h3>🌐 Web検索設定</h3>
-<label for="searchLanguage">検索言語</label>
-<select id="searchLanguage"><option value="ja" selected>日本語</option><option value="en">English</option></select>
-<label for="customSearchEndpoint">Web検索API</label>
-<input id="customSearchEndpoint"
-       type="url"
-       value="/api/search"
-       placeholder="https://example.com/api/search">
-<p class="help">同じドメインの <code>/api/search</code> を使用します。APIはPOSTで <code>{query, history, language}</code> を受け取り、<code>{answer, sources:[{title,url}]}</code> を返してください。APIキーはHTMLへ書かず、サーバー側の環境変数で管理してください。</p>
-<div class="modal-actions"><button data-web-close>閉じる</button><button id="saveWebSettings">保存</button></div>
-</div></div>
-
 <script>
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s);
 const chat=$('#chat'),input=$('#messageInput'),sendBtn=$('#sendBtn'),fileInput=$('#fileInput');
-const state={history:[],file:null,theme:0,recognition:null};
+const state={history:[],file:null,theme:0,recognition:null,apiBusy:false};
+const apiServerUrl=$('#apiServerUrl'),apiStatusSmall=$('#apiStatusSmall');
 
 const bgmTracks=[
   {title:'Endless Story',file:'endless_story.m4a',local:'audio/endless_story.m4a'},
@@ -659,16 +304,12 @@ function addMessage(role,text,attachment=null,save=true,ts=Date.now()){
   const avatar=document.createElement('div');avatar.className='avatar';avatar.textContent=role==='user'?'👤':p.icon;
   const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
   if(attachment){const a=document.createElement('div');a.className='attachment';a.textContent='📎 '+attachment.name;if(attachment.dataUrl?.startsWith('data:image/')){const img=document.createElement('img');img.src=attachment.dataUrl;img.alt=attachment.name;a.appendChild(img)}bubble.appendChild(a)}
-  if(role==='ai'&&attachment?.sources?.length){const src=document.createElement('div');src.className='web-sources';const h=document.createElement('strong');h.textContent='参照したWebページ';src.appendChild(h);attachment.sources.slice(0,5).forEach(x=>{const a=document.createElement('a');a.href=x.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='↗ '+(x.title||x.url);src.appendChild(a)});bubble.appendChild(src)}
   if(role==='ai'){const c=document.createElement('button');c.className='copy-reply';c.textContent='📋 返信をコピー';c.onclick=async()=>{try{await navigator.clipboard.writeText(text);toast('返信をコピーしました')}catch{toast('コピーできませんでした')}};bubble.appendChild(c)}
   const meta=document.createElement('div');meta.className='meta';meta.textContent=(role==='user'?'YOU':p.name)+' • '+timeLabel(ts);bubble.appendChild(meta);wrap.append(avatar,bubble);chat.appendChild(wrap);chat.scrollTop=chat.scrollHeight;
   if(save){state.history.push({role,text,attachment:attachment?{name:attachment.name,dataUrl:attachment.dataUrl?.startsWith('data:image/')?attachment.dataUrl:null}:null,ts});persist()}
 }
-function persist(){if($('#memoryToggle').checked)localStorage.setItem('ygpt_history',JSON.stringify(state.history.slice(-100)));localStorage.setItem('ygpt_settings',JSON.stringify({persona:$('#persona').value,roast:$('#roastLevel').value,memory:$('#memoryToggle').checked,speak:$('#speakToggle').checked,avatar:$('#avatarToggle').checked,theme:state.theme,web:true,searchLanguage:$('#searchLanguage')?.value||'ja',customSearchEndpoint:$('#customSearchEndpoint')?.value.trim()||''}))}
-function restore(){try{const st=JSON.parse(localStorage.getItem('ygpt_settings')||'{}');if(st.persona)$('#persona').value=st.persona;if(st.roast)$('#roastLevel').value=st.roast;$('#memoryToggle').checked=st.memory!==false;$('#speakToggle').checked=!!st.speak;$('#avatarToggle').checked=st.avatar!==false;state.theme=st.theme||0;if($('#searchLanguage'))$('#searchLanguage').value=st.searchLanguage||'ja';if ($('#customSearchEndpoint')) {
-  $('#customSearchEndpoint').value =
-    st.customSearchEndpoint || '/api/search';
-} const h=JSON.parse(localStorage.getItem('ygpt_history')||'[]');if(Array.isArray(h)&&h.length){state.history=h;h.forEach(x=>addMessage(x.role,x.text,x.attachment,false,x.ts))}$('#memoryText').value=localStorage.getItem('ygpt_memory')||''}catch(e){console.warn(e)}}
+function persist(){if($('#memoryToggle').checked)localStorage.setItem('ygpt_history',JSON.stringify(state.history.slice(-100)));localStorage.setItem('ygpt_settings',JSON.stringify({persona:$('#persona').value,roast:$('#roastLevel').value,memory:$('#memoryToggle').checked,speak:$('#speakToggle').checked,avatar:$('#avatarToggle').checked,api:$('#webToggle').checked,apiUrl:apiServerUrl.value.trim(),theme:state.theme}))}
+function restore(){try{const st=JSON.parse(localStorage.getItem('ygpt_settings')||'{}');if(st.persona)$('#persona').value=st.persona;if(st.roast)$('#roastLevel').value=st.roast;$('#memoryToggle').checked=st.memory!==false;$('#speakToggle').checked=!!st.speak;$('#avatarToggle').checked=st.avatar!==false;$('#webToggle').checked=!!st.api;apiServerUrl.value=st.apiUrl||localStorage.getItem('ygpt_api_server')||'';state.theme=st.theme||0;const h=JSON.parse(localStorage.getItem('ygpt_history')||'[]');if(Array.isArray(h)&&h.length){state.history=h;h.forEach(x=>addMessage(x.role,x.text,x.attachment,false,x.ts))}$('#memoryText').value=localStorage.getItem('ygpt_memory')||'';refreshApiStatus()}catch(e){console.warn(e)}}
 function calcExpression(text){const m=text.match(/(?:計算|calculate)?\s*([0-9+\-*/().%\s]{3,})/i);if(!m)return null;const exp=m[1].trim();if(!/^[0-9+\-*/().%\s]+$/.test(exp))return null;try{const val=Function('"use strict";return ('+exp+')')();return Number.isFinite(val)?`${exp} = ${val}`:null}catch{return null}}
 
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
@@ -744,51 +385,9 @@ function funReply(text){
  if(cmd==='/breath'||/(休憩|深呼吸)/.test(text))return `🌿 1分休憩\n4秒で吸う → 6秒で吐く、を5回。\n肩とあごの力を抜き、最後に「次にやる一つ」だけ決めよう。`;
  return null;
 }
-
-function detectEmotion(text){
- const t=(text||'').trim();
- if(/(ありがとう|助かった|嬉しい|うれしい|最高|できた|成功)/.test(t))return 'happy';
- if(/(疲れた|しんどい|つらい|悲しい|寂しい|不安|心配|落ち込)/.test(t))return 'concern';
- if(/(すごい|本当|まじ|マジ|驚|びっくり|信じられない)/.test(t))return 'surprise';
- if(/(ごめん|すみません|申し訳)/.test(t))return 'gentle';
- if(/(怒|むかつ|イライラ|最悪)/.test(t))return 'calm';
- if(/[!！]{2,}/.test(t))return 'excited';
- return 'normal';
-}
-function emotionLine(text){
- const emotion=detectEmotion(text),p=$('#persona').value;
- const lines={
-  happy:['それは嬉しいな！こっちまで気分が上がったよ。','お、いいじゃん！素直にうれしいぞ。','やったな。少し誇らしい気分だ。'],
-  concern:['それは少し心配だ。無理してないか？','うん、その話は軽く流したくない。','しんどかったな。まず落ち着いて整理しよう。'],
-  surprise:['えっ、それはちょっと驚いた。','おお、予想外だな。気になる。','なるほど、それは興味を引かれる話だ。'],
-  gentle:['大丈夫。気にしすぎなくていい。','ちゃんと伝えてくれたのが嬉しいよ。','責める気はないから、安心してくれ。'],
-  calm:['それは腹が立つよな。いったん一緒に整理しよう。','うん、その気持ちは分かる。勢いで損しない方法を考えよう。','かなり嫌だったんだな。まず事実と気持ちを分けよう。'],
-  excited:['おお、テンション高いな！こっちも乗ってきた。','その勢い、嫌いじゃないぞ！','よし、面白くなってきた。'],
-  normal:['なるほど。ちょっと考えてみる。','うん、話は受け取った。','よし、頭を切り替えて答える。']
- };
- let line=pick(lines[emotion]||lines.normal);
- if(p==='teacher')line=line.replace(/ぞ。?/g,'です。').replace(/な。?/g,'ですね。');
- if(p==='maid')line='お気持ち、しっかり受け止めました。';
- if(p==='shadow')line='感情波形を確認した。'+line;
- if(p==='comedian'&&emotion==='normal')line='なるほど、脳内会議を始めるぞ。';
- return line;
-}
-function emotionalReply(text,body){
- return `${emotionLine(text)}\n\n${body}`;
-}
-function unknownOfflineReply(text){
- const p=currentPersona();
- return emotionalReply(text,`${p.prefix}\n今の内蔵知識だけでは自信を持って答えられない。Web検索が使える状態なら調べて答えるよ。通信できない場合は、固有名詞や条件を少し具体的にしてくれ。`);
-}
-function emotionalWebReply(query,result){
- const p=currentPersona();
- const intro=emotionLine(query);
- return {answer:`${intro}\n\n${p.prefix}\n調べた内容をまとめるね。\n\n${result.answer}`,sources:result.sources||[]};
-}
-
 function offlineReply(raw){
  const text=raw.trim(),lower=text.toLowerCase(),p=currentPersona(),memory=localStorage.getItem('ygpt_memory')||'';
- const fun=funReply(text);if(fun)return emotionalReply(text,`${p.prefix}\n${fun}`);
+ const fun=funReply(text);if(fun)return `${p.prefix}\n${fun}`;
  const sass=p===personas.teacher||p===personas.maid?'':roast()+'\n';
  const calc=calcExpression(text);if(calc)return `${p.prefix}\n${sass}${calc}`;
  if(/^(こんにちは|こんばんは|おはよう|やあ|hello|hi)/i.test(text)){const h=new Date().getHours(),g=h<11?'おはようございます':h<18?'こんにちは':'こんばんは';return `${p.prefix}\n${sass}${g}！今日は何を一緒に進める？`}
@@ -798,7 +397,7 @@ function offlineReply(raw){
 ・/janken /number 100 /choice A|B /joke /story /compliment /challenge /stats
 ・/rewrite /ideas /todo /timer 5 /phrase /word /email /meeting /prompt /breath
 ・AI返信のワンタップコピー
-・会話統計とおまかせ話題\n\n内蔵機能で答えられない質問だけWeb検索を使用します。一般Web検索には別途APIサーバー接続が必要です。`;
+・会話統計とおまかせ話題\n\n本格的な最新情報検索や高度な生成AI回答には、別途APIサーバー接続が必要です。`;
  if(/(覚えて|メモリ|記憶)/.test(text))return memory?`${p.prefix}\n現在の永続メモリ：\n${memory}`:`${p.prefix}\nまだ永続メモリは空です。左メニューの「記憶を編集」から登録できます。`;
  if(/(ありがとう|助かった)/.test(text))return `${p.prefix}\nどういたしまして！次の作業も任せてください。`;
  if(/(ゲーム)/.test(text))return `${p.prefix}\nゲームの攻略、アイデア、HTML/JavaScript製ミニゲームの設計などを手伝えます。作品名や作りたい内容を入力してください。`;
@@ -828,135 +427,42 @@ function offlineReply(raw){
  if(/(名前|ネーミング|タイトル)/.test(text))return `${p.prefix}\n対象、雰囲気、入れたい言葉、避けたい言葉を入力してください。王道・親しみやすい・個性的の3方向で候補を出します。`;
 
   const fileInfo=state.file?.text?`\n\n添付ファイル「${state.file.name}」の先頭内容：\n${state.file.text.slice(0,700)}`:'';
- if(fileInfo)return emotionalReply(text,`${p.prefix}\n添付内容を確認したよ。\n${fileInfo}`);
- return null;
+ const memHint=memory?`\n登録メモリも参照しました：${memory.slice(0,160)}`:'';
+ return `${p.prefix}\n${sass}「${text}」を受け取った。現在は完全オフラインの内蔵応答モードです。質問をもう少し具体的にすると、より適切に整理できます。${fileInfo}${memHint}`;
 }
-
-function stripHtml(html){
- const d=document.createElement('div');d.innerHTML=html;return (d.textContent||'').replace(/\s+/g,' ').trim();
+function normalizedApiBase(){
+ const raw=(apiServerUrl.value||'').trim().replace(/\/+$/,'');
+ if(!raw)return '';
+ try{const u=new URL(raw);if(u.protocol!=='https:'&&u.hostname!=='localhost'&&u.hostname!=='127.0.0.1')throw new Error('HTTPSのURLを使用してください');return raw}catch(e){throw new Error('APIサーバーURLの形式を確認してください')}
 }
-async function customWebSearch(query){
-  const endpoint=(($('#customSearchEndpoint')?.value||'/api/search').trim()||'/api/search');
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),30000);
-  try{
-    const r=await fetch(endpoint,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({
-        query,
-        history:state.history.slice(-8),
-        language:$('#searchLanguage')?.value||'ja'
-      }),
-      signal:controller.signal
-    });
-    let data=null;
-    try{data=await r.json()}catch(_){}
-    if(!r.ok)throw new Error(data?.error||`Web検索APIエラー (${r.status})`);
-    if(!data?.answer)throw new Error('Web検索APIの応答形式が不正です');
-    return {
-      answer:String(data.answer),
-      sources:Array.isArray(data.sources)?data.sources:[]
-    };
-  }catch(e){
-    if(e?.name==='AbortError')throw new Error('Web検索APIがタイムアウトしました');
-    throw e;
-  }finally{
-    clearTimeout(timeout);
-  }
+function refreshApiStatus(connected=null){
+ const enabled=$('#webToggle').checked,base=(apiServerUrl.value||'').trim();
+ if(connected===true){apiStatusSmall.textContent='OpenAI API 接続OK';$('#statusText').textContent='OpenAI API接続中';return}
+ if(connected===false){apiStatusSmall.textContent='接続失敗・内蔵AIへフォールバック';$('#statusText').textContent='内蔵AI稼働中';return}
+ apiStatusSmall.textContent=enabled?(base?'OpenAI API 有効':'API URL未設定'):'内蔵AIモード';
+ $('#statusText').textContent=enabled&&base?'OpenAI API待機中':'内蔵AI稼働中';
 }
-async function duckDuckGoSearch(query){
- const lang=$('#searchLanguage')?.value||'ja';
- const api=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&no_redirect=1&skip_disambig=0&kl=${lang==='ja'?'jp-jp':'us-en'}`;
- const r=await fetch(api,{headers:{Accept:'application/json'}});
- if(!r.ok)throw new Error('Web検索APIに接続できません');
- const data=await r.json();
- const items=[];
- if(data.AbstractText)items.push({title:data.Heading||query,text:data.AbstractText,url:data.AbstractURL});
- const walk=list=>{
-   (list||[]).forEach(x=>{
-     if(x.Topics)return walk(x.Topics);
-     if(x.Text&&x.FirstURL)items.push({title:x.Text.split(' - ')[0].slice(0,90),text:x.Text,url:x.FirstURL});
-   });
- };
- walk(data.RelatedTopics);
- const unique=items.filter((x,i,a)=>x.url&&a.findIndex(y=>y.url===x.url)===i).slice(0,5);
- if(!unique.length)return null;
- return {
-   answer:`🌐 一般Web検索の要点\n\n${unique.slice(0,3).map((x,i)=>`${i+1}. ${x.title}\n${x.text.slice(0,520)}`).join('\n\n')}`,
-   sources:unique.map(x=>({title:x.title,url:x.url}))
- };
+async function testApiConnection(){
+ let base;try{base=normalizedApiBase()}catch(e){toast(e.message);return}
+ if(!base){toast('先にAPIサーバーURLを入力してください');return}
+ try{const c=new AbortController(),t=setTimeout(()=>c.abort(),10000);const r=await fetch(base+'/health',{signal:c.signal});clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();refreshApiStatus(true);toast(`接続OK：${d.model||'OpenAI API'}`)}catch(e){refreshApiStatus(false);toast('APIサーバーに接続できません')}
 }
-async function wikipediaSearch(query){
- const lang=$('#searchLanguage')?.value||'ja';
- const api=`https://${lang}.wikipedia.org/w/api.php?origin=*&action=query&generator=search&gsrsearch=${encodeURIComponent(query)}&gsrlimit=5&prop=extracts|info&exintro=1&explaintext=1&inprop=url&format=json`;
- const r=await fetch(api,{headers:{Accept:'application/json'}});
- if(!r.ok)throw new Error('Web検索APIに接続できません');
- const data=await r.json(),pages=Object.values(data?.query?.pages||{}).sort((a,b)=>(a.index||99)-(b.index||99));
- if(!pages.length)return null;
- const summaries=pages.slice(0,3).map((x,i)=>`${i+1}. ${x.title}\n${(x.extract||'概要なし').slice(0,520)}`);
- return {answer:`📚 百科事典による補完\n\n${summaries.join('\n\n')}`,sources:pages.slice(0,5).map(x=>({title:x.title,url:x.fullurl||`https://${lang}.wikipedia.org/?curid=${x.pageid}`}))};
+function apiHistory(){return state.history.slice(-14).filter(x=>x.role==='user'||x.role==='ai').map(x=>({role:x.role==='ai'?'assistant':'user',content:String(x.text||'').slice(0,12000)}))}
+async function askExternalAI(prompt,attached){
+ const base=normalizedApiBase();if(!base)throw new Error('APIサーバーURLが未設定です');
+ const memory=localStorage.getItem('ygpt_memory')||'',p=currentPersona();
+ const payload={message:prompt,history:apiHistory(),persona:{name:p.name,prefix:p.prefix},memory:memory.slice(0,4000),attachment:attached?.text?{name:attached.name,text:attached.text.slice(0,20000)}:null};
+ const c=new AbortController(),t=setTimeout(()=>c.abort(),60000);
+ try{const r=await fetch(base+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:c.signal});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);if(!d.reply)throw new Error('AI回答が空です');refreshApiStatus(true);return d.reply}finally{clearTimeout(t)}
 }
-function mergeSearchResults(query,results){
- const valid=results.filter(Boolean);
- if(!valid.length)return {
-   answer:`「${query}」に関する十分な情報を取得できませんでした。検索語を具体的にするか、検索設定で外部検索APIを登録してください。`,
-   sources:[]
- };
- const sources=[];
- valid.forEach(r=>(r.sources||[]).forEach(s=>{if(s?.url&&!sources.some(x=>x.url===s.url))sources.push(s)}));
- return {
-   answer:valid.map(r=>r.answer).join('\n\n---\n\n')+'\n\n※公開APIだけでは検索範囲や最新性に限界があります。重要な内容は参照先で確認してください。',
-   sources:sources.slice(0,8)
- };
+async function hybridReply(prompt,attached){
+ const localFun=funReply(prompt);if(localFun)return `${currentPersona().prefix}\n${localFun}`;
+ if(!$('#webToggle').checked)return offlineReply(prompt);
+ try{return await askExternalAI(prompt,attached)}catch(e){console.warn('OpenAI API fallback:',e);refreshApiStatus(false);toast('API接続失敗。内蔵AIで回答します');return offlineReply(prompt)}
 }
-async function onlineReply(query){
-  return await customWebSearch(query);
-}
-
 function typing(){const w=document.createElement('article');w.className='message';w.id='typing';w.innerHTML=`<div class="avatar">${currentPersona().icon}</div><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>`;chat.appendChild(w);chat.scrollTop=chat.scrollHeight}
 function speak(text){if(!$('#speakToggle').checked||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=1;speechSynthesis.speak(u)}
-async function send(){
- const text=input.value.trim();
- if(!text&&!state.file)return;
- addMessage('user',text||'添付ファイルを確認してください',state.file);
- input.value='';resize();
- const prompt=text||'添付ファイルを確認してください';
- const attached=state.file;
- clearFile();
- typing();
-
- try{
-   // おふざけ、計算、挨拶、相談などの内蔵応答を最優先。
-   const localAnswer=offlineReply(prompt);
-   let result;
-
-   if(localAnswer!==null){
-     result={answer:localAnswer,sources:[]};
-   }else if($('#webToggle').checked&&navigator.onLine){
-     const searched=await onlineReply(prompt);
-     result=emotionalWebReply(prompt,searched);
-   }else{
-     result={answer:unknownOfflineReply(prompt),sources:[]};
-   }
-
-   document.querySelector('#typing')?.remove();
-   addMessage(
-     'ai',
-     result.answer,
-     result.sources?.length?{sources:result.sources}:attached?.text?{name:attached.name}:null
-   );
-   speak(result.answer);
- }catch(e){
-   document.querySelector('#typing')?.remove();
-   const fallback=unknownOfflineReply(prompt)+`
-
-（Web検索に接続できなかったため、内蔵応答へ切り替えました）`;
-   addMessage('ai',fallback,null);
-   speak(fallback);
-   toast('Web検索に接続できませんでした');
- }
-}
+async function send(){if(state.apiBusy)return;const text=input.value.trim();if(!text&&!state.file)return;const attached=state.file;addMessage('user',text||'添付ファイルを確認してください',attached);input.value='';resize();const prompt=text||'添付ファイルを確認してください';clearFile();typing();state.apiBusy=true;sendBtn.disabled=true;try{const reply=await hybridReply(prompt,attached);document.querySelector('#typing')?.remove();addMessage('ai',reply,attached?.text?{name:attached.name}:null);speak(reply)}catch(e){document.querySelector('#typing')?.remove();const reply='エラーが発生しました。もう一度試してください。';addMessage('ai',reply);console.error(e)}finally{state.apiBusy=false;sendBtn.disabled=false}}
 function resize(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,150)+'px'}
 function clearFile(){state.file=null;fileInput.value='';$('#preview').classList.remove('show')}
 async function handleFile(file){if(!file)return;if(file.size>5*1024*1024){toast('5MB以下のファイルを選択してください');return}const data={name:file.name,type:file.type,size:file.size};if(file.type.startsWith('image/'))data.dataUrl=await readAs(file,'dataurl');else data.text=await readAs(file,'text');state.file=data;$('#previewText').textContent=`📎 ${file.name} (${Math.ceil(file.size/1024)}KB)`;$('#preview').classList.add('show');toast('ファイルを添付しました')}
@@ -970,13 +476,10 @@ $('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');document.addEve
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{input.value=b.textContent;send()});
 document.querySelectorAll('[data-fun]').forEach(b=>b.onclick=()=>{input.value=b.dataset.fun;send();});
 ['persona','roastLevel','memoryToggle','speakToggle','avatarToggle'].forEach(id=>$('#'+id).addEventListener('change',()=>{persist();if(id==='persona'){toast('AI人格を変更しました');$('#orb')&&($('#orb').textContent=currentPersona().icon)}}));
-$('#webToggle').onchange=e=>{if(!e.target.checked){toast('Web検索をOFFにしました。再読み込み時はONに戻ります')}else toast('Web検索をONにしました');persist();updateOnlineStatus()};
-function updateOnlineStatus(){const online=navigator.onLine;$('#statusText').textContent=online&&$('#webToggle').checked?'Web検索モード':'オフライン応答';$('#webStatusSmall').textContent=online?'API Web検索':'通信待機中';}
-window.addEventListener('online',updateOnlineStatus);window.addEventListener('offline',updateOnlineStatus);
-$('#webSettingsBtn').onclick=()=>$('#webSettingsModal').classList.add('show');
-document.querySelectorAll('[data-web-close]').forEach(b=>b.onclick=()=>$('#webSettingsModal').classList.remove('show'));
-$('#webSettingsModal').onclick=e=>{if(e.target.id==='webSettingsModal')e.currentTarget.classList.remove('show')};
-$('#saveWebSettings').onclick=()=>{persist();$('#webSettingsModal').classList.remove('show');toast('Web検索設定を保存しました')};
+$('#webToggle').onchange=()=>{persist();refreshApiStatus();if($('#webToggle').checked&&!apiServerUrl.value.trim())toast('APIサーバーURLを設定してください')};
+$('#saveApiServer').onclick=()=>{try{const base=normalizedApiBase();localStorage.setItem('ygpt_api_server',base);apiServerUrl.value=base;persist();refreshApiStatus();toast('APIサーバーURLを保存しました')}catch(e){toast(e.message)}};
+$('#testApiServer').onclick=testApiConnection;
+apiServerUrl.addEventListener('change',()=>{persist();refreshApiStatus()});
 $('#clearBtn').onclick=()=>{if(confirm('会話履歴をすべて削除しますか？')){state.history=[];localStorage.removeItem('ygpt_history');chat.innerHTML='';addMessage('ai','会話履歴を初期化しました。',null,true);toast('履歴を削除しました')}};
 $('#exportBtn').onclick=exportHistory;$('#themeBtn').onclick=()=>{state.theme=(state.theme+1)%3;applyTheme();toast('配色を変更しました')};
 $('#memoryBtn').onclick=()=>$('#memoryModal').classList.add('show');document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#memoryModal').classList.remove('show'));$('#memoryModal').onclick=e=>{if(e.target.id==='memoryModal')e.currentTarget.classList.remove('show')};$('#saveMemory').onclick=()=>{localStorage.setItem('ygpt_memory',$('#memoryText').value.trim());$('#memoryModal').classList.remove('show');toast('永続メモリを保存しました')};
@@ -986,8 +489,8 @@ $('#surpriseBtn').onclick=()=>{input.value=pick(['最近ちょっと嬉しかっ
 document.querySelectorAll('[data-stats-close]').forEach(b=>b.onclick=()=>$('#statsModal').classList.remove('show'));
 $('#statsModal').onclick=e=>{if(e.target.id==='statsModal')e.currentTarget.classList.remove('show')};
 
-restore();$('#webToggle').checked=true;applyTheme();setupVoice();resize();updateOnlineStatus();
-
+restore();applyTheme();setupVoice();resize();
+refreshApiStatus()
 })();
 </script>
 </body>
