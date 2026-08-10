@@ -13,12 +13,14 @@ if (!process.env.OPENAI_API_KEY) {
 }
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'missing-key' });
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS ||
+  process.env.ALLOWED_ORIGIN ||
+  '*'
+)
   .split(',')
   .map(v => v.trim())
-  .filter(Boolean);
-
-app.disable('x-powered-by');
+  .filter(Boolean);app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
 app.use(cors({
   origin(origin, callback) {
@@ -35,6 +37,13 @@ app.use('/api/', rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false
 }));
+
+app.get('/', (_req, res) => {
+  res.json({
+    ok: true,
+    service: 'YoshikunGPT API'
+  });
+});
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'YoshikunGPT API', model: MODEL });
@@ -99,10 +108,20 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    model: process.env.OPENAI_MODEL || "未設定"
+  });
+});
+
+
 app.use((err, _req, res, _next) => {
   console.error('server error:', err);
   res.status(500).json({ error: 'Server error' });
 });
+
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ YoshikunGPT API server: http://localhost:${PORT}`);
