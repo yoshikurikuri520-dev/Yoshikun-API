@@ -21,14 +21,7 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
   .map(v => v.trim())
   .filter(Boolean);app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
-app.use(cors({
-  origin(origin, callback) {
-    if (allowedOrigins.includes('*') || !origin || origin === 'null' || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('CORS: origin not allowed'));
-  }
-}));
+app.use(cors());
 
 app.use('/api/', rateLimit({
   windowMs: 60 * 1000,
