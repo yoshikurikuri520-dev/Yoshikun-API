@@ -106,7 +106,7 @@ body::after{
   <div class="card feature"><span class="ico">🔊</span><div><strong>読み上げ</strong><small>AI回答を音声再生</small></div><label class="switch"><input id="speakToggle" type="checkbox"><span></span></label></div>
   <div class="card">
     <div class="feature"><span class="ico">🌐</span><div><strong>OpenAI API</strong><small id="apiStatusSmall">内蔵AIモード</small></div><label class="switch"><input id="webToggle" type="checkbox"><span></span></label></div>
-    <input id="apiServerUrl" type="url" inputmode="url" autocapitalize="none" autocomplete="off" placeholder="https://あなたのAPI.onrender.com" style="width:100%;margin-top:10px;border:1px solid var(--line);background:#091126;color:#fff;border-radius:10px;padding:10px">
+    <input id="apiServerUrl" type="url" value="https://yoshikun-api-3.onrender.com" readonly aria-readonly="true" style="width:100%;margin-top:10px;border:1px solid var(--line);background:#091126;color:#fff;border-radius:10px;padding:10px;opacity:.95">
     <div class="side-actions" style="margin-top:8px"><button id="saveApiServer" type="button">URL保存</button><button id="testApiServer" type="button">接続テスト</button></div>
   </div>
   <div class="card feature"><span class="ico">🎭</span><div><strong>Live Avatar</strong><small>反応アニメーション</small></div><label class="switch"><input id="avatarToggle" type="checkbox" checked><span></span></label></div>
@@ -161,6 +161,8 @@ const $=s=>document.querySelector(s);
 const chat=$('#chat'),input=$('#messageInput'),sendBtn=$('#sendBtn'),fileInput=$('#fileInput');
 const state={history:[],file:null,theme:0,recognition:null,apiBusy:false};
 const apiServerUrl=$('#apiServerUrl'),apiStatusSmall=$('#apiStatusSmall');
+const API_BASE_URL='https://yoshikun-api-3.onrender.com';
+apiServerUrl.value=API_BASE_URL;
 
 const bgmTracks=[
   {title:'Endless Story',file:'endless_story.m4a',local:'audio/endless_story.m4a'},
@@ -308,8 +310,42 @@ function addMessage(role,text,attachment=null,save=true,ts=Date.now()){
   const meta=document.createElement('div');meta.className='meta';meta.textContent=(role==='user'?'YOU':p.name)+' • '+timeLabel(ts);bubble.appendChild(meta);wrap.append(avatar,bubble);chat.appendChild(wrap);chat.scrollTop=chat.scrollHeight;
   if(save){state.history.push({role,text,attachment:attachment?{name:attachment.name,dataUrl:attachment.dataUrl?.startsWith('data:image/')?attachment.dataUrl:null}:null,ts});persist()}
 }
-function persist(){if($('#memoryToggle').checked)localStorage.setItem('ygpt_history',JSON.stringify(state.history.slice(-100)));localStorage.setItem('ygpt_settings',JSON.stringify({persona:$('#persona').value,roast:$('#roastLevel').value,memory:$('#memoryToggle').checked,speak:$('#speakToggle').checked,avatar:$('#avatarToggle').checked,api:$('#webToggle').checked,apiUrl:apiServerUrl.value.trim(),theme:state.theme}))}
-function restore(){try{const st=JSON.parse(localStorage.getItem('ygpt_settings')||'{}');if(st.persona)$('#persona').value=st.persona;if(st.roast)$('#roastLevel').value=st.roast;$('#memoryToggle').checked=st.memory!==false;$('#speakToggle').checked=!!st.speak;$('#avatarToggle').checked=st.avatar!==false;$('#webToggle').checked=!!st.api;apiServerUrl.value=st.apiUrl||localStorage.getItem('ygpt_api_server')||'';state.theme=st.theme||0;const h=JSON.parse(localStorage.getItem('ygpt_history')||'[]');if(Array.isArray(h)&&h.length){state.history=h;h.forEach(x=>addMessage(x.role,x.text,x.attachment,false,x.ts))}$('#memoryText').value=localStorage.getItem('ygpt_memory')||'';refreshApiStatus()}catch(e){console.warn(e)}}
+function persist(){
+  if($('#memoryToggle').checked)localStorage.setItem('ygpt_history',JSON.stringify(state.history.slice(-100)));
+  localStorage.setItem('ygpt_settings',JSON.stringify({
+    persona:$('#persona').value,
+    roast:$('#roastLevel').value,
+    memory:$('#memoryToggle').checked,
+    speak:$('#speakToggle').checked,
+    avatar:$('#avatarToggle').checked,
+    api:$('#webToggle').checked,
+    theme:state.theme
+  }));
+}
+function restore(){
+  try{
+    const st=JSON.parse(localStorage.getItem('ygpt_settings')||'{}');
+    if(st.persona)$('#persona').value=st.persona;
+    if(st.roast)$('#roastLevel').value=st.roast;
+    $('#memoryToggle').checked=st.memory!==false;
+    $('#speakToggle').checked=!!st.speak;
+    $('#avatarToggle').checked=st.avatar!==false;
+    $('#webToggle').checked=!!st.api;
+    apiServerUrl.value=API_BASE_URL;
+    localStorage.removeItem('ygpt_api_server');
+    state.theme=st.theme||0;
+    const h=JSON.parse(localStorage.getItem('ygpt_history')||'[]');
+    if(Array.isArray(h)&&h.length){
+      state.history=h;
+      h.forEach(x=>addMessage(x.role,x.text,x.attachment,false,x.ts));
+    }
+    $('#memoryText').value=localStorage.getItem('ygpt_memory')||'';
+    refreshApiStatus();
+  }catch(e){
+    console.warn(e);
+    apiServerUrl.value=API_BASE_URL;
+  }
+}
 function calcExpression(text){const m=text.match(/(?:計算|calculate)?\s*([0-9+\-*/().%\s]{3,})/i);if(!m)return null;const exp=m[1].trim();if(!/^[0-9+\-*/().%\s]+$/.test(exp))return null;try{const val=Function('"use strict";return ('+exp+')')();return Number.isFinite(val)?`${exp} = ${val}`:null}catch{return null}}
 
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
@@ -431,34 +467,192 @@ function offlineReply(raw){
  return `${p.prefix}\n${sass}「${text}」を受け取った。現在は完全オフラインの内蔵応答モードです。質問をもう少し具体的にすると、より適切に整理できます。${fileInfo}${memHint}`;
 }
 function normalizedApiBase(){
- const raw=(apiServerUrl.value||'').trim().replace(/\/+$/,'');
- if(!raw)return '';
- try{const u=new URL(raw);if(u.protocol!=='https:'&&u.hostname!=='localhost'&&u.hostname!=='127.0.0.1')throw new Error('HTTPSのURLを使用してください');return raw}catch(e){throw new Error('APIサーバーURLの形式を確認してください')}
+  return API_BASE_URL;
 }
+
 function refreshApiStatus(connected=null){
- const enabled=$('#webToggle').checked,base=(apiServerUrl.value||'').trim();
- if(connected===true){apiStatusSmall.textContent='OpenAI API 接続OK';$('#statusText').textContent='OpenAI API接続中';return}
- if(connected===false){apiStatusSmall.textContent='接続失敗・内蔵AIへフォールバック';$('#statusText').textContent='内蔵AI稼働中';return}
- apiStatusSmall.textContent=enabled?(base?'OpenAI API 有効':'API URL未設定'):'内蔵AIモード';
- $('#statusText').textContent=enabled&&base?'OpenAI API待機中':'内蔵AI稼働中';
+  const enabled=$('#webToggle').checked;
+  apiServerUrl.value=API_BASE_URL;
+
+  if(connected===true){
+    apiStatusSmall.textContent='OpenAI API 接続OK';
+    $('#statusText').textContent='OpenAI API接続中';
+    return;
+  }
+
+  if(connected===false){
+    apiStatusSmall.textContent='接続失敗・内蔵AIへフォールバック';
+    $('#statusText').textContent='内蔵AI稼働中';
+    return;
+  }
+
+  apiStatusSmall.textContent=enabled?'OpenAI API 有効':'内蔵AIモード';
+  $('#statusText').textContent=enabled?'OpenAI API待機中':'内蔵AI稼働中';
 }
+
+function explainFetchError(error){
+  if(error?.name==='AbortError')return '接続タイムアウト';
+  if(error instanceof TypeError && /fetch/i.test(String(error.message||''))){
+    return 'Failed to fetch（CORS・Render停止・ネットワーク・HTTPSを確認）';
+  }
+  return String(error?.message||'不明な通信エラー');
+}
+
+async function fetchJson(url,options={},timeoutMs=15000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+
+  try{
+    console.log('[YoshikunGPT API] request:',url);
+
+    const response=await fetch(url,{
+      ...options,
+      mode:'cors',
+      cache:'no-store',
+      signal:controller.signal,
+      headers:{
+        Accept:'application/json',
+        ...(options.headers||{})
+      }
+    });
+
+    const raw=await response.text();
+    let data={};
+
+    try{
+      data=raw?JSON.parse(raw):{};
+    }catch{
+      data={raw};
+    }
+
+    console.log('[YoshikunGPT API] response:',{
+      url,
+      status:response.status,
+      ok:response.ok,
+      data
+    });
+
+    if(!response.ok){
+      throw new Error(
+        data?.message||
+        data?.error||
+        `HTTP ${response.status}`
+      );
+    }
+
+    return data;
+  }catch(error){
+    console.error('[YoshikunGPT API] fetch error:',{
+      url,
+      name:error?.name,
+      message:error?.message,
+      error
+    });
+    throw error;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
 async function testApiConnection(){
- let base;try{base=normalizedApiBase()}catch(e){toast(e.message);return}
- if(!base){toast('先にAPIサーバーURLを入力してください');return}
- try{const c=new AbortController(),t=setTimeout(()=>c.abort(),10000);const r=await fetch(base+'/health',{signal:c.signal});clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();refreshApiStatus(true);toast(`接続OK：${d.model||'OpenAI API'}`)}catch(e){refreshApiStatus(false);toast('APIサーバーに接続できません')}
+  apiServerUrl.value=API_BASE_URL;
+
+  try{
+    const data=await fetchJson(`${API_BASE_URL}/api/health`,{},20000);
+
+    if(data?.ok!==true){
+      throw new Error('API healthレスポンスが不正です');
+    }
+
+    if(data?.corsAllowed===false){
+      throw new Error('サーバー側でCORSが拒否されています');
+    }
+
+    refreshApiStatus(true);
+
+    const keyState=data.openaiConfigured===false
+      ? ' / APIキー未設定'
+      : '';
+
+    toast(`接続OK：${data.model||'OpenAI API'}${keyState}`);
+  }catch(error){
+    refreshApiStatus(false);
+    const detail=explainFetchError(error);
+    toast(`API接続失敗：${detail}`);
+    console.error('API connection test failed:',detail);
+  }
 }
-function apiHistory(){return state.history.slice(-14).filter(x=>x.role==='user'||x.role==='ai').map(x=>({role:x.role==='ai'?'assistant':'user',content:String(x.text||'').slice(0,12000)}))}
+
+function apiHistory(){
+  return state.history
+    .slice(-14)
+    .filter(x=>x.role==='user'||x.role==='ai')
+    .map(x=>({
+      role:x.role==='ai'?'assistant':'user',
+      content:String(x.text||'').slice(0,12000)
+    }));
+}
+
 async function askExternalAI(prompt,attached){
- const base=normalizedApiBase();if(!base)throw new Error('APIサーバーURLが未設定です');
- const memory=localStorage.getItem('ygpt_memory')||'',p=currentPersona();
- const payload={message:prompt,history:apiHistory(),persona:{name:p.name,prefix:p.prefix},memory:memory.slice(0,4000),attachment:attached?.text?{name:attached.name,text:attached.text.slice(0,20000)}:null};
- const c=new AbortController(),t=setTimeout(()=>c.abort(),60000);
- try{const r=await fetch(base+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:c.signal});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);if(!d.reply)throw new Error('AI回答が空です');refreshApiStatus(true);return d.reply}finally{clearTimeout(t)}
+  const memory=localStorage.getItem('ygpt_memory')||'';
+  const p=currentPersona();
+
+  const payload={
+    message:prompt,
+    history:apiHistory(),
+    persona:{name:p.name,prefix:p.prefix},
+    memory:memory.slice(0,4000),
+    attachment:attached?.text
+      ? {
+          name:attached.name,
+          text:attached.text.slice(0,20000)
+        }
+      : null
+  };
+
+  try{
+    const data=await fetchJson(
+      `${API_BASE_URL}/api/chat`,
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(payload)
+      },
+      70000
+    );
+
+    if(!data?.reply){
+      throw new Error('AI回答が空です');
+    }
+
+    refreshApiStatus(true);
+    return data.reply;
+  }catch(error){
+    const detail=explainFetchError(error);
+    console.error('OpenAI API request failed:',detail);
+    throw new Error(detail);
+  }
 }
+
 async function hybridReply(prompt,attached){
- const localFun=funReply(prompt);if(localFun)return `${currentPersona().prefix}\n${localFun}`;
- if(!$('#webToggle').checked)return offlineReply(prompt);
- try{return await askExternalAI(prompt,attached)}catch(e){console.warn('OpenAI API fallback:',e);refreshApiStatus(false);toast('API接続失敗。内蔵AIで回答します');return offlineReply(prompt)}
+  const localFun=funReply(prompt);
+  if(localFun)return `${currentPersona().prefix}
+${localFun}`;
+
+  if(!$('#webToggle').checked){
+    return offlineReply(prompt);
+  }
+
+  try{
+    return await askExternalAI(prompt,attached);
+  }catch(error){
+    console.warn('OpenAI API fallback:',error);
+    refreshApiStatus(false);
+    toast(`API接続失敗：${error.message}`);
+    return offlineReply(prompt);
+  }
 }
 function typing(){const w=document.createElement('article');w.className='message';w.id='typing';w.innerHTML=`<div class="avatar">${currentPersona().icon}</div><div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>`;chat.appendChild(w);chat.scrollTop=chat.scrollHeight}
 function speak(text){if(!$('#speakToggle').checked||!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=1;speechSynthesis.speak(u)}
@@ -476,10 +670,20 @@ $('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');document.addEve
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{input.value=b.textContent;send()});
 document.querySelectorAll('[data-fun]').forEach(b=>b.onclick=()=>{input.value=b.dataset.fun;send();});
 ['persona','roastLevel','memoryToggle','speakToggle','avatarToggle'].forEach(id=>$('#'+id).addEventListener('change',()=>{persist();if(id==='persona'){toast('AI人格を変更しました');$('#orb')&&($('#orb').textContent=currentPersona().icon)}}));
-$('#webToggle').onchange=()=>{persist();refreshApiStatus();if($('#webToggle').checked&&!apiServerUrl.value.trim())toast('APIサーバーURLを設定してください')};
-$('#saveApiServer').onclick=()=>{try{const base=normalizedApiBase();localStorage.setItem('ygpt_api_server',base);apiServerUrl.value=base;persist();refreshApiStatus();toast('APIサーバーURLを保存しました')}catch(e){toast(e.message)}};
+$('#webToggle').onchange=()=>{
+  apiServerUrl.value=API_BASE_URL;
+  persist();
+  refreshApiStatus();
+  if($('#webToggle').checked)testApiConnection();
+};
+$('#saveApiServer').onclick=()=>{
+  apiServerUrl.value=API_BASE_URL;
+  localStorage.removeItem('ygpt_api_server');
+  persist();
+  refreshApiStatus();
+  toast('Render API URLは固定済みです');
+};
 $('#testApiServer').onclick=testApiConnection;
-apiServerUrl.addEventListener('change',()=>{persist();refreshApiStatus()});
 $('#clearBtn').onclick=()=>{if(confirm('会話履歴をすべて削除しますか？')){state.history=[];localStorage.removeItem('ygpt_history');chat.innerHTML='';addMessage('ai','会話履歴を初期化しました。',null,true);toast('履歴を削除しました')}};
 $('#exportBtn').onclick=exportHistory;$('#themeBtn').onclick=()=>{state.theme=(state.theme+1)%3;applyTheme();toast('配色を変更しました')};
 $('#memoryBtn').onclick=()=>$('#memoryModal').classList.add('show');document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#memoryModal').classList.remove('show'));$('#memoryModal').onclick=e=>{if(e.target.id==='memoryModal')e.currentTarget.classList.remove('show')};$('#saveMemory').onclick=()=>{localStorage.setItem('ygpt_memory',$('#memoryText').value.trim());$('#memoryModal').classList.remove('show');toast('永続メモリを保存しました')};
@@ -489,8 +693,13 @@ $('#surpriseBtn').onclick=()=>{input.value=pick(['最近ちょっと嬉しかっ
 document.querySelectorAll('[data-stats-close]').forEach(b=>b.onclick=()=>$('#statsModal').classList.remove('show'));
 $('#statsModal').onclick=e=>{if(e.target.id==='statsModal')e.currentTarget.classList.remove('show')};
 
-restore();applyTheme();setupVoice();resize();
-refreshApiStatus()
+restore();
+apiServerUrl.value=API_BASE_URL;
+localStorage.removeItem('ygpt_api_server');
+applyTheme();
+setupVoice();
+resize();
+refreshApiStatus();
 })();
 </script>
 </body>
