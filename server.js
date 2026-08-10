@@ -13,11 +13,10 @@ if (!process.env.OPENAI_API_KEY) {
 }
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'missing-key' });
-const allowedOrigins = (
-  process.env.ALLOWED_ORIGINS ||
-  process.env.ALLOWED_ORIGIN ||
-  '*'
-)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
+  .split(',')
+  .map(v => v.trim())
+  .filter(Boolean);
   .split(',')
   .map(v => v.trim())
   .filter(Boolean);app.disable('x-powered-by');
