@@ -2,9 +2,9 @@ services:
   - type: web
     name: yoshikungpt-api
     runtime: node
-    rootDir: api-server
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /health
 
     envVars:
       - key: NODE_VERSION
@@ -16,5 +16,5 @@ services:
       - key: OPENAI_API_KEY
         sync: false
 
-      - - key: ALLOWED_ORIGIN
-  value: https://yoshikurikuri520-dev.github.io
+      - key: ALLOWED_ORIGINS
+        value: https://yoshikurikuri520-dev.github.io
